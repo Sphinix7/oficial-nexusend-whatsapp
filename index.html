@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NexuSend — Automatización de Ventas y Atención con IA por WhatsApp</title>
+  <meta name="description" content="Automatiza la atención al cliente, cotizaciones por foto y texto, catálogos en PDF y seguimiento comercial en WhatsApp 24/7 con Inteligencia Artificial.">
+  <meta name="keywords" content="WhatsApp bot, automatización WhatsApp, CRM WhatsApp, inteligencia artificial WhatsApp, chatbot para empresas, NexuSend, papeleria, ferreteria">
+  
+  <!-- Favicon Oficial -->
+  <link rel="icon" type="image/png" href="assets/icon_crop.png">
+
+  <!-- Google Fonts: Inter & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            heading: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Canvas Confetti CDN for Micro-Interactions -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans antialiased selection:bg-emerald-500 selection:text-white">
+
+  <!-- Top Announcement Bar -->
+  <aside aria-label="Anuncio especial" class="bg-gradient-to-r from-emerald-700 via-teal-700 to-indigo-700 text-white text-xs font-medium py-2 px-4 text-center flex items-center justify-center gap-2 shadow-sm">
+    <span class="bg-white/20 text-white px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider">Nuevo v4.2</span>
+    <span>🚀 <strong>Visión Artificial Multimodal:</strong> Ahora la IA cotiza listas de útiles escolares por foto y recibe pedidos en PDF automáticamente.</span>
+    <a href="#simulador" class="underline hover:text-emerald-100 font-semibold ml-1">Probar ahora &rarr;</a>
+  </aside>
+
+  <!-- Navbar -->
+  <header class="sticky top-0 z-40 transition-all duration-300 backdrop-blur-md bg-white/90 border-b border-slate-200/80" id="main-nav">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <!-- Official Logo Brand -->
+      <a href="#" class="flex items-center gap-3 group">
+        <img src="assets/nexusend_header.png" alt="NexuSend Plataforma WhatsApp" class="h-10 sm:h-12 w-auto object-contain group-hover:scale-[1.02] transition-transform">
+      </a>
+
+      <!-- Desktop Nav Links -->
+      <nav class="hidden md:flex items-center gap-7 text-sm font-semibold text-slate-600">
+        <a href="#simulador" class="hover:text-emerald-600 transition-colors">Simulador</a>
+        <a href="#capturas" class="hover:text-emerald-600 transition-colors flex items-center gap-1">
+          <span>Capturas del Sistema</span>
+          <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-1.5 py-0.5 rounded">HD</span>
+        </a>
+        <a href="#vision-ocr" class="hover:text-emerald-600 transition-colors">Visión OCR</a>
+        <a href="#roi" class="hover:text-emerald-600 transition-colors">Calculadora ROI</a>
+        <a href="#planes" class="hover:text-emerald-600 transition-colors">Planes</a>
+        <a href="#faq" class="hover:text-emerald-600 transition-colors">FAQ</a>
+      </nav>
+
+      <!-- Action Buttons -->
+      <div class="hidden sm:flex items-center gap-3">
+        <button class="open-demo-trigger inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold shadow-sm hover:border-slate-400 transition-all cursor-pointer">
+          <i data-lucide="message-circle" class="w-4 h-4 text-emerald-600"></i>
+          <span>Chat de Prueba</span>
+        </button>
+        <a href="#planes" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md shadow-emerald-600/20 hover:shadow-lg transition-all cursor-pointer">
+          <i data-lucide="zap" class="w-4 h-4"></i>
+          <span>Contratar Plan</span>
+        </a>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <div class="flex items-center md:hidden">
+        <button id="mobile-menu-btn" aria-label="Abrir menú" class="p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Mobile Dropdown Menu -->
+    <div id="mobile-menu" class="hidden md:hidden border-b border-slate-200 bg-white px-4 pt-3 pb-6 space-y-3">
+      <a href="#simulador" class="block py-2 text-sm font-semibold text-slate-700 hover:text-emerald-600">Simulador en Vivo</a>
+      <a href="#capturas" class="block py-2 text-sm font-semibold text-slate-700 hover:text-emerald-600">Capturas del Sistema HD</a>
+      <a href="#vision-ocr" class="block py-2 text-sm font-semibold text-slate-700 hover:text-emerald-600">Visión OCR Multimodal</a>
+      <a href="#roi" class="block py-2 text-sm font-semibold text-slate-700 hover:text-emerald-600">Calculadora ROI</a>
+      <a href="#planes" class="block py-2 text-sm font-semibold text-slate-700 hover:text-emerald-600">Planes y Precios</a>
+      <a href="#faq" class="block py-2 text-sm font-semibold text-slate-700 hover:text-emerald-600">Preguntas Frecuentes</a>
+      <div class="pt-3 border-t border-slate-100 space-y-2">
+        <button class="open-demo-trigger w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-slate-300 bg-slate-50 text-slate-800 text-xs font-bold">
+          <i data-lucide="message-circle" class="w-4 h-4 text-emerald-600"></i>
+          <span>Probar en WhatsApp Real</span>
+        </button>
+        <a href="#planes" class="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-emerald-600 text-white text-xs font-bold shadow-md">
+          <span>Ver Planes desde $19.90</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="relative pt-12 pb-20 md:pt-20 md:pb-28 overflow-hidden bg-gradient-to-b from-white via-slate-50/50 to-white">
+    <!-- Subtle Background Glow -->
+    <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-emerald-500/10 blur-[120px] rounded-full pointer-events-none -z-10"></div>
+    
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
+      
+      <!-- Pill Badge -->
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-xs font-bold shadow-sm">
+        <span class="flex h-2 w-2 rounded-full bg-emerald-500 animate-ping"></span>
+        <span>Plataforma SaaS Oficial para Empresas y Negocios</span>
+      </div>
+
+      <!-- Main Headline -->
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight max-w-4xl mx-auto font-heading leading-[1.12]">
+        Vende en <span class="text-gradient-emerald">Piloto Automático</span> por WhatsApp con Inteligencia Artificial
+      </h1>
+
+      <!-- Subtitle -->
+      <p class="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
+        Responde consultas en menos de 2 segundos, cotiza listas de productos completas, lee fotos de listas escolares, comparte catálogos en PDF y deriva a humanos con 1 clic. <strong>100% en la nube, sin dejar tu PC encendida.</strong>
+      </p>
+
+      <!-- Key Metrics Counter Bar -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto pt-2">
+        <div class="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-sm">
+          <p class="text-2xl font-black text-emerald-600 font-heading">&lt; 1.8s</p>
+          <p class="text-[11px] text-slate-500 font-semibold">Respuesta Inmediata</p>
+        </div>
+        <div class="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-sm">
+          <p class="text-2xl font-black text-slate-900 font-heading">24/7/365</p>
+          <p class="text-[11px] text-slate-500 font-semibold">Disponibilidad en la Nube</p>
+        </div>
+        <div class="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-sm">
+          <p class="text-2xl font-black text-indigo-600 font-heading">100%</p>
+          <p class="text-[11px] text-slate-500 font-semibold">Pausa con Asesor Humano</p>
+        </div>
+        <div class="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-sm">
+          <p class="text-2xl font-black text-emerald-600 font-heading">0%</p>
+          <p class="text-[11px] text-slate-500 font-semibold">Riesgo Bloqueo (Spintax)</p>
+        </div>
+      </div>
+
+      <!-- Hero CTA Buttons -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+        <a href="#simulador" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm shadow-xl shadow-emerald-600/25 hover:shadow-2xl hover:scale-[1.02] transition-all flex items-center justify-center gap-2.5">
+          <i data-lucide="play" class="w-4 h-4 fill-white"></i>
+          <span>Probar Simulador Interactivo</span>
+        </a>
+        <a href="#capturas" class="w-full sm:w-auto px-7 py-4 rounded-2xl bg-white hover:bg-slate-50 text-slate-800 font-bold text-sm border border-slate-300 shadow-sm hover:border-slate-400 transition-all flex items-center justify-center gap-2">
+          <i data-lucide="maximize" class="w-4 h-4 text-slate-500"></i>
+          <span>Ver Capturas Reales del Sistema</span>
+        </a>
+      </div>
+
+      <!-- Trust Badges -->
+      <div class="pt-8 flex flex-wrap items-center justify-center gap-6 text-xs text-slate-500 font-medium">
+        <span class="flex items-center gap-1.5"><i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i> Conexión Oficial Vía Código QR</span>
+        <span class="flex items-center gap-1.5"><i data-lucide="server" class="w-4 h-4 text-emerald-600"></i> Base de Datos Aislada por Cliente</span>
+        <span class="flex items-center gap-1.5"><i data-lucide="smartphone" class="w-4 h-4 text-emerald-600"></i> Compatible con PC y Celular</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Interactive Multi-Industry WhatsApp Simulator -->
+  <section id="simulador" class="py-20 bg-white border-t border-b border-slate-200/80 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto space-y-3 mb-10">
+        <span class="text-xs font-bold tracking-wider text-emerald-600 uppercase bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">Simulador Interactivo en Vivo</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 font-heading">
+          Pruébalo ahora: Así interactúa NexuSend con tus clientes
+        </h2>
+        <p class="text-sm text-slate-600">
+          Selecciona tu industria (Papelería, Ferretería o Servicios) y haz clic en las consultas de ejemplo o escribe una pregunta personalizada.
+        </p>
+
+        <!-- Industry Selector Tabs -->
+        <div class="inline-flex p-1.5 rounded-2xl bg-slate-100 border border-slate-200 text-xs font-bold mt-2 gap-1">
+          <button class="industry-tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 text-white shadow-md shadow-emerald-600/20 transition-all cursor-pointer flex items-center gap-2" data-industry="papeleria">
+            <span>🎒 Papelería & Trámites</span>
+            <span class="bg-white/20 text-white text-[9px] px-1.5 py-0.5 rounded font-black">Tisaleo</span>
+          </button>
+          <button class="industry-tab-btn px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-200 transition-all cursor-pointer flex items-center gap-2" data-industry="ferreteria">
+            <span>🏗️ Ferretería & Materiales</span>
+            <span class="bg-slate-200 text-slate-700 text-[9px] px-1.5 py-0.5 rounded font-black">Bycas</span>
+          </button>
+          <button class="industry-tab-btn px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-200 transition-all cursor-pointer flex items-center gap-2" data-industry="servicios">
+            <span>🩺 Consultorios & Citas</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Simulator Layout Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center max-w-5xl mx-auto">
+        
+        <!-- Left: Quick-Action Chips & Live WA CTA -->
+        <div class="lg:col-span-5 space-y-6">
+          <div class="bg-slate-50 p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+            <div class="flex items-center justify-between">
+              <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                <i data-lucide="mouse-pointer" class="w-4 h-4 text-emerald-600"></i>
+                <span>Haz clic para probar un caso:</span>
+              </h3>
+              <span class="text-[10px] text-slate-400 font-semibold">1-clic demo</span>
+            </div>
+
+            <!-- Chips Container dynamically loaded by JS -->
+            <div class="flex flex-col gap-2.5" id="sim-chips-container">
+              <!-- Rendered via script.js -->
+            </div>
+          </div>
+
+          <!-- Real Phone Demo Card -->
+          <div class="bg-gradient-to-br from-emerald-500/10 via-teal-500/5 to-indigo-500/10 p-6 rounded-3xl border border-emerald-500/30 text-center space-y-3">
+            <div class="w-11 h-11 mx-auto rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-md shadow-emerald-600/30">
+              <i data-lucide="smartphone" class="w-5 h-5"></i>
+            </div>
+            <h4 class="font-bold text-slate-900 text-sm">¿Deseas probarlo desde tu propio teléfono?</h4>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Escríbele directamente a nuestro número de demostración y recibe atención inmediata en tu propia app de WhatsApp.
+            </p>
+            <button class="open-demo-trigger w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md shadow-emerald-600/20 cursor-pointer transition-all">
+              <i data-lucide="message-square" class="w-4 h-4"></i>
+              <span>Abrir Chat de Demostración</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Right: Smartphone Chat Mockup -->
+        <div class="lg:col-span-7 flex justify-center">
+          <div class="w-full max-w-[390px] bg-slate-900 rounded-[46px] p-3.5 shadow-2xl border-4 border-slate-800 relative">
+            
+            <!-- Dynamic Island / Speaker -->
+            <div class="absolute top-5 left-1/2 -translate-x-1/2 w-28 h-4 bg-slate-950 rounded-full z-20"></div>
+
+            <!-- Phone Screen -->
+            <div class="bg-[#efeae2] rounded-[38px] overflow-hidden flex flex-col h-[590px] relative border border-slate-700/60 wa-bg-chat">
+              
+              <!-- WhatsApp Header -->
+              <div class="bg-[#075e54] text-white px-3.5 py-3 pt-6 flex items-center justify-between shrink-0 shadow">
+                <div class="flex items-center gap-2.5">
+                  <i data-lucide="arrow-left" class="w-4 h-4 text-white/80 cursor-pointer"></i>
+                  <img src="assets/icon_crop.png" alt="NexuSend" class="w-8 h-8 rounded-full bg-white/20 p-0.5 object-cover">
+                  <div>
+                    <h4 class="text-xs font-bold leading-tight" id="sim-brand-title">Multiservicios Tisaleo</h4>
+                    <p class="text-[10px] text-emerald-200 flex items-center gap-1" id="sim-brand-sub">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                      En línea • Papelería & Trámites
+                    </p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2.5 text-white/80">
+                  <button id="sim-sound-btn" aria-label="Silenciar o activar sonidos" class="p-1 hover:text-white cursor-pointer" title="Sonido">
+                    <i data-lucide="volume-2" class="w-4 h-4"></i>
+                  </button>
+                  <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                </div>
+              </div>
+
+              <!-- Chat Message Stream -->
+              <div class="flex-1 p-3.5 overflow-y-auto space-y-3 font-sans text-xs" id="sim-messages">
+                <!-- Initial Bot Message populated via JS -->
+              </div>
+
+              <!-- Typing indicator -->
+              <div id="sim-typing" class="hidden px-4 py-1.5 text-[11px] text-slate-500 italic flex items-center gap-2 bg-white/70 backdrop-blur-sm border-t border-slate-200/50">
+                <div class="flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 typing-dot"></span>
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 typing-dot"></span>
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 typing-dot"></span>
+                </div>
+                <span>El asistente está escribiendo...</span>
+              </div>
+
+              <!-- Chat Input Bar -->
+              <div class="bg-[#f0f2f5] p-2 flex items-center gap-2 border-t border-slate-200">
+                <div class="flex-1 bg-white rounded-full px-3.5 py-2 flex items-center gap-2 shadow-sm border border-slate-200">
+                  <i data-lucide="smile" class="w-4 h-4 text-slate-400"></i>
+                  <input type="text" id="sim-input" placeholder="Escribe un mensaje..." class="flex-1 bg-transparent border-0 outline-none text-xs text-slate-800 placeholder-slate-400">
+                  <i data-lucide="paperclip" class="w-4 h-4 text-slate-400"></i>
+                </div>
+                <button id="sim-send-btn" aria-label="Enviar mensaje" class="w-9 h-9 rounded-full bg-[#00a884] hover:bg-[#008f6f] text-white flex items-center justify-center shrink-0 shadow transition-all cursor-pointer">
+                  <i data-lucide="send" class="w-4 h-4 ml-0.5"></i>
+                </button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Real System Screenshots Gallery (HD Lightbox) -->
+  <section id="capturas" class="py-24 bg-slate-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto space-y-3 mb-16">
+        <span class="text-xs font-bold tracking-wider text-emerald-600 uppercase bg-emerald-100/70 px-3 py-1 rounded-full border border-emerald-200">Software Real en Producción</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 font-heading">
+          Explora la Interfaz de NexuSend en Alta Resolución
+        </h2>
+        <p class="text-sm text-slate-600">
+          Haz clic en cualquiera de las capturas del sistema para abrirlas en pantalla completa con zoom interactivo y comprobar su potencia.
+        </p>
+      </div>
+
+      <!-- 5-Card Interactive Screenshot Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- Screenshot 1: Real Live Chat Inbox -->
+        <div class="screenshot-trigger group bg-white rounded-3xl p-4 border border-slate-200 shadow-sm hover:shadow-xl hover:border-emerald-300 transition-all cursor-pointer"
+             data-src="assets/real-dashboard-chat.png"
+             data-title="Bandeja de Chats en Vivo con Asesor y Pausa de IA"
+             data-desc="Permite a tu equipo responder desde PC o celular mientras la IA se pausa automáticamente cuando un humano interviene.">
+          <div class="relative overflow-hidden rounded-2xl aspect-[16/10] bg-slate-100">
+            <img src="assets/real-dashboard-chat.png" alt="Bandeja de Chats en Vivo NexuSend" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+            <div class="absolute inset-0 bg-slate-950/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <span class="bg-white/95 text-slate-900 px-3.5 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1.5">
+                <i data-lucide="zoom-in" class="w-4 h-4 text-emerald-600"></i>
+                <span>Clic para Ampliar en HD</span>
+              </span>
+            </div>
+            <span class="absolute top-2.5 left-2.5 bg-emerald-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow">
+              Chats en Vivo
+            </span>
+          </div>
+          <div class="mt-4 space-y-1">
+            <h3 class="font-bold text-slate-900 text-sm">Bandeja Multidispositivo & Traspaso</h3>
+            <p class="text-xs text-slate-500">Soporta filtros de chats atendidos por IA y chats derivados a asesores.</p>
+          </div>
+        </div>
+
+        <!-- Screenshot 2: Real Campaign Scheduler with Spintax -->
+        <div class="screenshot-trigger group bg-white rounded-3xl p-4 border border-slate-200 shadow-sm hover:shadow-xl hover:border-emerald-300 transition-all cursor-pointer"
+             data-src="assets/real-campaigns-modal.png"
+             data-title="Creador de Campañas Masivas con Spintax Anti-Baneos"
+             data-desc="Programa envíos masivos rotando saludos y textos para que WhatsApp no detecte patrones repetitivos y proteja tu línea.">
+          <div class="relative overflow-hidden rounded-2xl aspect-[16/10] bg-slate-100">
+            <img src="assets/real-campaigns-modal.png" alt="Campañas Masivas con Spintax" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+            <div class="absolute inset-0 bg-slate-950/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <span class="bg-white/95 text-slate-900 px-3.5 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1.5">
+                <i data-lucide="zoom-in" class="w-4 h-4 text-emerald-600"></i>
+                <span>Clic para Ampliar en HD</span>
+              </span>
+            </div>
+            <span class="absolute top-2.5 left-2.5 bg-indigo-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow">
+              Motor Spintax
+            </span>
+          </div>
+          <div class="mt-4 space-y-1">
+            <h3 class="font-bold text-slate-900 text-sm">Programación de Campañas Inteligentes</h3>
+            <p class="text-xs text-slate-500">Envío con botones interactivos, imágenes y worker seguro en segundo plano.</p>
+          </div>
+        </div>
+
+        <!-- Screenshot 3: Real Campaign Delivery Analytics -->
+        <div class="screenshot-trigger group bg-white rounded-3xl p-4 border border-slate-200 shadow-sm hover:shadow-xl hover:border-emerald-300 transition-all cursor-pointer"
+             data-src="assets/real-campaign-details.png"
+             data-title="Trazabilidad Forense de Entrega y Lectura"
+             data-desc="Monitorea en tiempo real cuántos mensajes se entregaron, quién los leyó y quién interactuó con tu catálogo.">
+          <div class="relative overflow-hidden rounded-2xl aspect-[16/10] bg-slate-100">
+            <img src="assets/real-campaign-details.png" alt="Trazabilidad y Métricas de Envíos" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+            <div class="absolute inset-0 bg-slate-950/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <span class="bg-white/95 text-slate-900 px-3.5 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1.5">
+                <i data-lucide="zoom-in" class="w-4 h-4 text-emerald-600"></i>
+                <span>Clic para Ampliar en HD</span>
+              </span>
+            </div>
+            <span class="absolute top-2.5 left-2.5 bg-teal-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow">
+              Métricas en Vivo
+            </span>
+          </div>
+          <div class="mt-4 space-y-1">
+            <h3 class="font-bold text-slate-900 text-sm">Métricas de Envíos y Confirmaciones</h3>
+            <p class="text-xs text-slate-500">Trazabilidad detallada de leídos, entregados y pendientes por destinatario.</p>
+          </div>
+        </div>
+
+        <!-- Screenshot 4: Real OCR Vision in Papelería -->
+        <div class="screenshot-trigger group bg-white rounded-3xl p-4 border border-slate-200 shadow-sm hover:shadow-xl hover:border-emerald-300 transition-all cursor-pointer"
+             data-src="assets/real-papeleria-vision.png"
+             data-title="Visión Artificial OCR: Cotización de Lista de Útiles por Foto"
+             data-desc="El cliente envió una foto de la lista escolar; Gemini Flash leyó cada ítem y generó la cotización con precio oficial en WhatsApp.">
+          <div class="relative overflow-hidden rounded-2xl aspect-[16/10] bg-slate-100">
+            <img src="assets/real-papeleria-vision.png" alt="Visión Artificial OCR Papelería" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500">
+            <div class="absolute inset-0 bg-slate-950/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <span class="bg-white/95 text-slate-900 px-3.5 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1.5">
+                <i data-lucide="zoom-in" class="w-4 h-4 text-emerald-600"></i>
+                <span>Clic para Ampliar en HD</span>
+              </span>
+            </div>
+            <span class="absolute top-2.5 left-2.5 bg-amber-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow">
+              Caso Real: Papelería
+            </span>
+          </div>
+          <div class="mt-4 space-y-1">
+            <h3 class="font-bold text-slate-900 text-sm">Cotización Instantánea por Foto</h3>
+            <p class="text-xs text-slate-500">Lectura multimodal de listas de útiles, repuestos y recibos manuscritos.</p>
+          </div>
+        </div>
+
+        <!-- Screenshot 5: Real PDF Processing -->
+        <div class="screenshot-trigger group bg-white rounded-3xl p-4 border border-slate-200 shadow-sm hover:shadow-xl hover:border-emerald-300 transition-all cursor-pointer"
+             data-src="assets/real-papeleria-pdf.png"
+             data-title="Recepción Inteligente de Archivos PDF para Impresión"
+             data-desc="El cliente envía un archivo PDF; la IA confirma la recepción, consulta especificaciones (A3, color) y coordina el trabajo.">
+          <div class="relative overflow-hidden rounded-2xl aspect-[16/10] bg-slate-100">
+            <img src="assets/real-papeleria-pdf.png" alt="Recepción de PDFs en WhatsApp" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500">
+            <div class="absolute inset-0 bg-slate-950/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <span class="bg-white/95 text-slate-900 px-3.5 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1.5">
+                <i data-lucide="zoom-in" class="w-4 h-4 text-emerald-600"></i>
+                <span>Clic para Ampliar en HD</span>
+              </span>
+            </div>
+            <span class="absolute top-2.5 left-2.5 bg-purple-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow">
+              Manejo de PDFs
+            </span>
+          </div>
+          <div class="mt-4 space-y-1">
+            <h3 class="font-bold text-slate-900 text-sm">Gestión de Documentos y Tareas</h3>
+            <p class="text-xs text-slate-500">Recepción automática de deberes, planos, trámites y facturas en PDF.</p>
+          </div>
+        </div>
+
+        <!-- Card 6: Dashboard Overview -->
+        <div class="screenshot-trigger group bg-white rounded-3xl p-4 border border-slate-200 shadow-sm hover:shadow-xl hover:border-emerald-300 transition-all cursor-pointer"
+             data-src="assets/dashboard-preview.jpg"
+             data-title="Suite Integral NexuSend para Administradores"
+             data-desc="Control unificado de contactos, campañas masivas, base de conocimiento RAG e integraciones multi-tenant.">
+          <div class="relative overflow-hidden rounded-2xl aspect-[16/10] bg-slate-100">
+            <img src="assets/dashboard-preview.jpg" alt="Panel General NexuSend" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+            <div class="absolute inset-0 bg-slate-950/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <span class="bg-white/95 text-slate-900 px-3.5 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1.5">
+                <i data-lucide="zoom-in" class="w-4 h-4 text-emerald-600"></i>
+                <span>Clic para Ampliar en HD</span>
+              </span>
+            </div>
+            <span class="absolute top-2.5 left-2.5 bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow">
+              Panel de Control
+            </span>
+          </div>
+          <div class="mt-4 space-y-1">
+            <h3 class="font-bold text-slate-900 text-sm">Panel de Control & Reportes</h3>
+            <p class="text-xs text-slate-500">Acceso a métricas de consumo de tokens, clientes activos y campañas.</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Interactive OCR Vision Demo Section (Papelería Highlight) -->
+  <section id="vision-ocr" class="py-20 bg-white border-t border-slate-200">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 rounded-[36px] p-8 sm:p-12 text-white shadow-2xl relative overflow-hidden">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          <!-- Left: Description and Trigger -->
+          <div class="lg:col-span-6 space-y-5">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold">
+              <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+              <span>Tecnología Gemini 3.6 Multimodal</span>
+            </div>
+
+            <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold font-heading leading-tight">
+              ¿Un cliente envió una foto arrugada de una lista? <span class="text-emerald-400">La IA la lee y cotiza en 1 segundo.</span>
+            </h2>
+
+            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              En negocios como papelerías, ferreterías o repuesteras, los clientes suelen mandar fotos de notas hechas a mano o listas escolares. NexuSend analiza visualmente la imagen, reconoce el texto y cotiza con los precios oficiales de tu base de datos.
+            </p>
+
+            <button id="demo-scan-btn" class="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs shadow-lg shadow-emerald-500/25 transition-all cursor-pointer">
+              <i data-lucide="scan-line" class="w-4 h-4"></i>
+              <span>⚡ Simular Escaneo IA en Vivo</span>
+            </button>
+          </div>
+
+          <!-- Right: Interactive Scanning Container -->
+          <div class="lg:col-span-6">
+            <div class="bg-slate-950/80 rounded-2xl p-4 border border-slate-700/60 shadow-inner relative">
+              
+              <div class="relative rounded-xl overflow-hidden aspect-[4/3] bg-slate-900">
+                <img src="assets/real-papeleria-vision.png" alt="Foto de lista escolar para escaneo" class="w-full h-full object-cover object-top opacity-90">
+                
+                <!-- Laser Line (Hidden by default, animated on scan) -->
+                <div id="ocr-laser" class="hidden absolute left-0 right-0 h-1 bg-gradient-to-r from-transparent via-emerald-400 to-transparent shadow-[0_0_15px_#10b981] scanner-laser z-20"></div>
+
+                <!-- Overlay Badge -->
+                <div class="absolute bottom-3 left-3 bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-700 text-[11px] text-emerald-300 font-mono">
+                  <span>Target: Lista Inicial 2 • U.E. Aníbal Salgado</span>
+                </div>
+              </div>
+
+              <!-- OCR Results Box -->
+              <div id="ocr-results-box" class="mt-3.5 p-3 rounded-xl bg-slate-900 border border-slate-700/80 text-xs space-y-1.5 transition-opacity">
+                <div class="flex items-center justify-between text-[11px] font-bold text-slate-400">
+                  <span>Salida de Inteligencia Artificial:</span>
+                  <span class="text-emerald-400">Precisión 99.4%</span>
+                </div>
+                <div class="font-mono text-[11px] text-slate-300 space-y-0.5">
+                  <p>✔ 1 Caja crayolas triangulares &rarr; <span class="text-white font-bold">$2.75</span></p>
+                  <p>✔ 1 Témpera 250ml (amarillo) &rarr; <span class="text-white font-bold">$2.25</span></p>
+                  <p>✔ 1 Plastilina grande 12 col &rarr; <span class="text-white font-bold">$1.50</span></p>
+                  <p>✔ 1 Pincel plano N. 24 &rarr; <span class="text-white font-bold">$1.00</span></p>
+                </div>
+                <div class="pt-1.5 border-t border-slate-800 flex justify-between items-center text-xs font-bold text-emerald-400">
+                  <span>TOTAL ESTIMADO:</span>
+                  <span class="text-sm font-extrabold text-white">$7.50 USD</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Interactive Speed & Conversion Benchmark -->
+  <section class="py-20 bg-slate-50 border-t border-slate-200">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-2xl mx-auto space-y-3 mb-14">
+        <span class="text-xs font-bold tracking-wider text-emerald-600 uppercase bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">Comparativa Real</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-heading">
+          El Costo de la Lentitud en WhatsApp
+        </h2>
+        <p class="text-xs sm:text-sm text-slate-600">
+          En ventas digitales, el primero que responde se lleva el 80% de los cierres. Mira la diferencia:
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+        
+        <!-- Case A: Traditional Manual Response -->
+        <div class="p-7 rounded-3xl bg-white border border-red-200 shadow-sm space-y-4">
+          <div class="w-10 h-10 rounded-xl bg-red-100 text-red-600 flex items-center justify-center font-bold">
+            <i data-lucide="clock-alert" class="w-5 h-5"></i>
+          </div>
+          <h3 class="font-extrabold text-slate-900 text-lg">Atención Manual Tradicional</h3>
+          <ul class="space-y-2.5 text-xs text-slate-600">
+            <li class="flex items-start gap-2">
+              <i data-lucide="x" class="w-4 h-4 text-red-500 shrink-0 mt-0.5"></i>
+              <span>Tiempo de espera promedio: <strong>15 a 45 minutos</strong>.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i data-lucide="x" class="w-4 h-4 text-red-500 shrink-0 mt-0.5"></i>
+              <span>Por las noches y fines de semana: <strong>0 respuestas</strong>.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i data-lucide="x" class="w-4 h-4 text-red-500 shrink-0 mt-0.5"></i>
+              <span>El cliente ya le escribió a 2 competidores y compró allá.</span>
+            </li>
+          </ul>
+          <div class="p-3 bg-red-50 rounded-xl text-red-900 text-xs font-semibold">
+            📉 Pierdes hasta un 70% de clientes potenciales calificados.
+          </div>
+        </div>
+
+        <!-- Case B: NexuSend AI Autonomous -->
+        <div class="p-7 rounded-3xl bg-gradient-to-b from-white to-emerald-50/50 border-2 border-emerald-500 shadow-xl shadow-emerald-500/10 space-y-4 relative">
+          <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold shadow-md shadow-emerald-600/30">
+            <i data-lucide="zap" class="w-5 h-5"></i>
+          </div>
+          <h3 class="font-extrabold text-slate-900 text-lg">Con NexuSend Suite</h3>
+          <ul class="space-y-2.5 text-xs text-slate-700">
+            <li class="flex items-start gap-2">
+              <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+              <span>Tiempo de respuesta: <strong>1.4 segundos exactos</strong>.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+              <span>Atención 24/7/365 en la nube sin cortes de luz ni batería.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+              <span>Cotización con precios oficiales y envío de PDF al momento.</span>
+            </li>
+          </ul>
+          <div class="p-3 bg-emerald-100/70 border border-emerald-300 rounded-xl text-emerald-900 text-xs font-bold">
+            🚀 Cierra ventas en caliente antes de que el cliente busque en otro lado.
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Interactive ROI Calculator Section -->
+  <section id="roi" class="py-20 bg-white border-t border-slate-200">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="bg-slate-50 rounded-3xl p-8 sm:p-12 border border-slate-200 shadow-xl space-y-8">
+        
+        <div class="text-center max-w-2xl mx-auto space-y-2">
+          <span class="text-xs font-bold tracking-wider text-emerald-600 uppercase bg-emerald-100/70 px-3 py-1 rounded-full border border-emerald-200">Calculadora de Retorno</span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-heading">
+            ¿Cuánto dinero estás dejando de ganar cada mes?
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-600">
+            Mueve los controles para calcular las ventas adicionales que puedes rescatar respondiendo al instante.
+          </p>
+        </div>
+
+        <!-- Slider Controls -->
+        <div class="space-y-6 max-w-2xl mx-auto">
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <label for="roi-chats-slider" class="text-xs sm:text-sm font-bold text-slate-700">Mensajes de clientes recibidos por día:</label>
+              <span id="roi-chats-val" class="text-base font-extrabold text-emerald-600">30 chats / día</span>
+            </div>
+            <input type="range" id="roi-chats-slider" min="5" max="150" value="30" step="5" class="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-600">
+            <div class="flex justify-between text-[10px] text-slate-400 mt-1">
+              <span>5 chats</span>
+              <span>50 chats</span>
+              <span>100 chats</span>
+              <span>150+ chats</span>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <label for="roi-ticket-slider" class="text-xs sm:text-sm font-bold text-slate-700">Valor promedio de tu venta o ticket:</label>
+              <span id="roi-ticket-val" class="text-base font-extrabold text-emerald-600">$25 USD</span>
+            </div>
+            <input type="range" id="roi-ticket-slider" min="5" max="250" value="25" step="5" class="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-600">
+            <div class="flex justify-between text-[10px] text-slate-400 mt-1">
+              <span>$5 USD</span>
+              <span>$50 USD</span>
+              <span>$100 USD</span>
+              <span>$250+ USD</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calculated Metrics Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-slate-200 text-center">
+          <div class="p-5 rounded-2xl bg-emerald-50/80 border border-emerald-200/80">
+            <p class="text-[11px] font-bold text-emerald-900 uppercase tracking-wider">Ventas Recuperadas Estimadas</p>
+            <p id="roi-sales-result" class="text-3xl font-black text-emerald-700 mt-1 font-heading">+$1,125 USD</p>
+            <p class="text-[10px] text-emerald-600 mt-0.5">Al mes en nuevas ventas</p>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-teal-50/80 border border-teal-200/80">
+            <p class="text-[11px] font-bold text-teal-900 uppercase tracking-wider">Horas de Trabajo Ahorradas</p>
+            <p id="roi-hours-result" class="text-3xl font-black text-teal-700 mt-1 font-heading">45 Horas</p>
+            <p class="text-[10px] text-teal-600 mt-0.5">Tiempo libre mensual para ti</p>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-indigo-50/80 border border-indigo-200/80">
+            <p class="text-[11px] font-bold text-indigo-900 uppercase tracking-wider">Retorno de Inversión (ROI)</p>
+            <p id="roi-percent-result" class="text-3xl font-black text-indigo-700 mt-1 font-heading">3,760%</p>
+            <p class="text-[10px] text-indigo-600 mt-0.5">Frente al costo del plan</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Pricing Plans Section -->
+  <section id="planes" class="py-24 bg-slate-50 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto space-y-4 mb-16">
+        <span class="text-xs font-bold tracking-wider text-emerald-600 uppercase bg-emerald-100/70 px-3 py-1 rounded-full border border-emerald-200">Planes Todo Incluido</span>
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 font-heading">
+          Elige el plan ideal para tu negocio
+        </h2>
+        <p class="text-sm text-slate-600">
+          Sin contratos forzosos. Sin costos de instalación ocultos. Activación en minutos.
+        </p>
+
+        <!-- Billing Period Toggle -->
+        <div class="inline-flex items-center gap-3 p-1.5 rounded-full bg-slate-200/80 border border-slate-300 text-xs font-semibold mt-4">
+          <button id="btn-monthly" class="px-5 py-2 rounded-full bg-white text-slate-900 shadow-sm transition-all cursor-pointer font-bold">Facturación Mensual</button>
+          <button id="btn-annual" class="px-5 py-2 rounded-full text-slate-600 hover:text-slate-900 transition-all cursor-pointer">
+            Anual <span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full text-[10px] font-extrabold ml-1">Ahorra 2 Meses</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 3 Tier Pricing Cards Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch max-w-6xl mx-auto">
+        
+        <!-- Plan 1: Starter -->
+        <div class="rounded-3xl p-8 bg-white border border-slate-200 shadow-md hover:shadow-xl hover:border-slate-300 transition-all flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center mb-4">
+              <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Plan Emprendedor</span>
+              <span class="p-1 px-2.5 rounded-full bg-slate-100 text-slate-700 text-[11px] font-semibold">1 Negocio</span>
+            </div>
+            
+            <h3 class="text-2xl font-black text-slate-900 font-heading">NexuSend Starter</h3>
+            <p class="text-xs text-slate-500 mt-1 mb-6">Para pequeños negocios que quieren automatizar su atención básica.</p>
+
+            <div class="flex items-baseline gap-1 mb-6">
+              <span class="text-4xl lg:text-5xl font-black text-slate-900 font-heading plan-price-val" data-monthly="19.90" data-annual="16.50">$19.90</span>
+              <span class="text-xs font-semibold text-slate-500">/ mes</span>
+            </div>
+
+            <!-- Features List -->
+            <ul class="space-y-3 text-xs text-slate-700 border-t border-slate-100 pt-6">
+              <li class="flex items-start gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span><strong>1 Conexión WhatsApp</strong> activa 24/7 en la nube</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span><strong>1 Usuario Administrador</strong> (2 sesiones simultáneas)</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span><strong>IA Dual-Engine</strong> (Respuestas inteligentes inmediatas)</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span>Hasta <strong>500 contactos</strong> almacenados</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span>Bandeja de <strong>Chat en Vivo</strong> con pausa de IA</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span>Base de Conocimiento de hasta 20 preguntas clave</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="pt-8">
+            <button class="buy-plan-btn w-full py-3.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-md transition-all cursor-pointer" data-plan="starter" data-price="19.90">
+              Contratar Plan Starter
+            </button>
+          </div>
+        </div>
+
+        <!-- Plan 2: Business (Featured) -->
+        <div class="rounded-3xl p-8 bg-gradient-to-b from-white to-emerald-50/40 border-2 border-emerald-500 shadow-2xl shadow-emerald-500/15 transition-all flex flex-col justify-between relative transform lg:-translate-y-2">
+          
+          <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-wider shadow-md">
+            ⭐ Más Popular & Recomendado
+          </div>
+
+          <div>
+            <div class="flex justify-between items-center mb-4">
+              <span class="text-xs font-bold text-emerald-700 uppercase tracking-wider">Plan Comercial</span>
+              <span class="p-1 px-2.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-extrabold">2 Admins</span>
+            </div>
+            
+            <h3 class="text-2xl font-black text-slate-900 font-heading">NexuSend Business</h3>
+            <p class="text-xs text-slate-500 mt-1 mb-6">Para negocios en crecimiento que venden por WhatsApp y envían promociones.</p>
+
+            <div class="flex items-baseline gap-1 mb-6">
+              <span class="text-4xl lg:text-5xl font-black text-emerald-700 font-heading plan-price-val" data-monthly="29.90" data-annual="24.90">$29.90</span>
+              <span class="text-xs font-semibold text-slate-500">/ mes</span>
+            </div>
+
+            <!-- Features List -->
+            <ul class="space-y-3 text-xs text-slate-700 border-t border-emerald-200/60 pt-6">
+              <li class="flex items-start gap-2.5">
+                <i data-lucide="check-circle" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span><strong>Todo lo del Plan Starter</strong> +</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span><strong>2 Usuarios Administradores</strong> (4 sesiones PC/Móvil)</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span><strong>Visión Artificial Multimodal:</strong> Cotiza listas por foto</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span>Envío automático de <strong>Catálogos en PDF</strong></span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span><strong>Campañas Masivas</strong> con Spintax y anti-bloqueo</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span>Hasta <strong>2,500 contactos</strong> almacenados</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="pt-8">
+            <button class="buy-plan-btn w-full py-4 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-extrabold text-xs shadow-lg shadow-emerald-600/30 hover:shadow-xl transition-all cursor-pointer" data-plan="business" data-price="29.90">
+              Contratar Plan Business
+            </button>
+          </div>
+        </div>
+
+        <!-- Plan 3: Pro -->
+        <div class="rounded-3xl p-8 bg-white border border-slate-200 shadow-md hover:shadow-xl hover:border-slate-300 transition-all flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center mb-4">
+              <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider">Plan Corporativo</span>
+              <span class="p-1 px-2.5 rounded-full bg-indigo-50 text-indigo-700 text-[11px] font-semibold">3 Admins</span>
+            </div>
+            
+            <h3 class="text-2xl font-black text-slate-900 font-heading">NexuSend Pro</h3>
+            <p class="text-xs text-slate-500 mt-1 mb-6">Para empresas con alto flujo que requieren doble línea y CRM avanzado.</p>
+
+            <div class="flex items-baseline gap-1 mb-6">
+              <span class="text-4xl lg:text-5xl font-black text-indigo-600 font-heading plan-price-val" data-monthly="49.90" data-annual="39.90">$49.90</span>
+              <span class="text-xs font-semibold text-slate-500">/ mes</span>
+            </div>
+
+            <!-- Features List -->
+            <ul class="space-y-3 text-xs text-slate-700 border-t border-slate-100 pt-6">
+              <li class="flex items-start gap-2.5">
+                <i data-lucide="check-circle" class="w-4 h-4 text-indigo-600 shrink-0 mt-0.5"></i>
+                <span><strong>Todo lo del Plan Business</strong> +</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-indigo-600 shrink-0 mt-0.5"></i>
+                <span><strong>Doble Línea WhatsApp</strong> (2 números conectados)</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-indigo-600 shrink-0 mt-0.5"></i>
+                <span><strong>3 Administradores</strong> (6 sesiones simultáneas)</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-indigo-600 shrink-0 mt-0.5"></i>
+                <span><strong>Seguimientos CRM Automáticos:</strong> Toques a 24h y 48h</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-indigo-600 shrink-0 mt-0.5"></i>
+                <span>Contactos y Campañas <strong>Ilimitadas</strong></span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-indigo-600 shrink-0 mt-0.5"></i>
+                <span>Soporte prioritario VIP por videollamada</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="pt-8">
+            <button class="buy-plan-btn w-full py-3.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md transition-all cursor-pointer" data-plan="pro" data-price="49.90">
+              Contratar Plan Pro
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section id="faq" class="py-20 bg-white border-t border-slate-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center space-y-3 mb-12">
+        <span class="text-xs font-bold tracking-wider text-emerald-600 uppercase bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">Dudas Resueltas</span>
+        <h2 class="text-3xl font-extrabold text-slate-900 font-heading">Preguntas Frecuentes</h2>
+        <p class="text-xs sm:text-sm text-slate-600">Todo lo que necesitas saber antes de empezar a vender en automático.</p>
+      </div>
+
+      <div class="space-y-4">
+        
+        <div class="bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+          <button class="faq-btn w-full p-5 text-left font-bold text-slate-900 text-xs sm:text-sm flex items-center justify-between hover:bg-slate-100 transition-colors cursor-pointer">
+            <span>¿Necesito dejar mi computadora encendida?</span>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform"></i>
+          </button>
+          <div class="faq-content hidden px-5 pb-5 text-xs text-slate-600 leading-relaxed border-t border-slate-200 pt-3">
+            <strong>No, para nada.</strong> NexuSend corre 100% en servidores dedicados en la nube. Tu WhatsApp responderá aunque apagues tu PC, te quedes sin batería o no tengas internet en tu celular.
+          </div>
+        </div>
+
+        <div class="bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+          <button class="faq-btn w-full p-5 text-left font-bold text-slate-900 text-xs sm:text-sm flex items-center justify-between hover:bg-slate-100 transition-colors cursor-pointer">
+            <span>¿Puedo seguir respondiendo manualmente cuando yo quiera?</span>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform"></i>
+          </button>
+          <div class="faq-content hidden px-5 pb-5 text-xs text-slate-600 leading-relaxed border-t border-slate-200 pt-3">
+            <strong>Por supuesto.</strong> Puedes responder desde la bandeja en vivo de NexuSend o directamente desde tu teléfono móvil. Cuando un asesor humano envía un mensaje, el sistema pausa de inmediato las respuestas automáticas de ese chat para que tengas control total.
+          </div>
+        </div>
+
+        <div class="bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+          <button class="faq-btn w-full p-5 text-left font-bold text-slate-900 text-xs sm:text-sm flex items-center justify-between hover:bg-slate-100 transition-colors cursor-pointer">
+            <span>¿Cómo conecto mi WhatsApp al sistema?</span>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform"></i>
+          </button>
+          <div class="faq-content hidden px-5 pb-5 text-xs text-slate-600 leading-relaxed border-t border-slate-200 pt-3">
+            Es exactamente igual que iniciar sesión en WhatsApp Web. Solo abres tu panel, vas a <em>Dispositivos Vinculados</em> en tu teléfono y escaneas el código QR que aparece en pantalla. ¡Tarda menos de 30 segundos!
+          </div>
+        </div>
+
+        <div class="bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+          <button class="faq-btn w-full p-5 text-left font-bold text-slate-900 text-xs sm:text-sm flex items-center justify-between hover:bg-slate-100 transition-colors cursor-pointer">
+            <span>¿Existe riesgo de que me bloqueen el número por enviar campañas?</span>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform"></i>
+          </button>
+          <div class="faq-content hidden px-5 pb-5 text-xs text-slate-600 leading-relaxed border-t border-slate-200 pt-3">
+            No, porque incluimos un motor de <strong>Spintax avanzado</strong> que varía automáticamente cada palabra de tus mensajes (ej: alternando <em>"Hola"</em>, <em>"Buen día"</em>, <em>"Estimado"</em>) junto con intervalos de espera aleatorios entre mensaje y mensaje.
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CTA Banner Final -->
+  <section class="py-16 bg-gradient-to-r from-emerald-700 via-teal-700 to-indigo-800 text-white relative overflow-hidden">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 relative z-10">
+      <h2 class="text-3xl sm:text-4xl font-black font-heading leading-tight">
+        Comienza a vender 24/7 sin perder más clientes
+      </h2>
+      <p class="text-sm text-emerald-100 max-w-2xl mx-auto">
+        Configura tu cuenta hoy mismo con tu base de datos dedicada. Activa tu WhatsApp y empieza a cerrar ventas en automático.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+        <a href="#planes" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-white hover:bg-emerald-50 text-emerald-900 font-black text-xs shadow-xl transition-all">
+          Ver Planes y Precios
+        </a>
+        <button class="open-demo-trigger w-full sm:w-auto px-7 py-4 rounded-xl border border-white/40 bg-white/10 hover:bg-white/20 text-white font-bold text-xs backdrop-blur-sm transition-all cursor-pointer">
+          Probar Asistente en WhatsApp
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-slate-400 py-12 text-xs border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+      
+      <div class="flex items-center gap-3">
+        <img src="assets/logo.png" alt="NexuSend" class="h-8 w-auto object-contain">
+        <span class="text-slate-600">|</span>
+        <span>© 2026 NexuSend Platform. Todos los derechos reservados.</span>
+      </div>
+
+      <div class="flex items-center gap-6 text-slate-400">
+        <a href="#simulador" class="hover:text-white transition-colors">Simulador</a>
+        <a href="#capturas" class="hover:text-white transition-colors">Capturas HD</a>
+        <a href="#planes" class="hover:text-white transition-colors">Planes</a>
+        <a href="#faq" class="hover:text-white transition-colors">FAQ</a>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- Full-Resolution HD Lightbox Modal -->
+  <div id="lightbox-modal" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md hidden flex flex-col p-4 sm:p-6">
+    <!-- Top Bar with controls -->
+    <div class="flex items-center justify-between text-white shrink-0 mb-3 px-2">
+      <div class="space-y-0.5">
+        <h3 id="lightbox-title" class="font-bold text-sm sm:text-base text-white">Captura en Alta Resolución</h3>
+        <p id="lightbox-desc" class="text-xs text-slate-400">Detalle visual del sistema NexuSend.</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="lightbox-zoom-out" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-white cursor-pointer" title="Reducir">
+          <i data-lucide="zoom-out" class="w-4 h-4"></i>
+        </button>
+        <button id="lightbox-zoom-reset" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-white cursor-pointer" title="Reiniciar Zoom">
+          100%
+        </button>
+        <button id="lightbox-zoom-in" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-white cursor-pointer" title="Ampliar">
+          <i data-lucide="zoom-in" class="w-4 h-4"></i>
+        </button>
+        <button id="lightbox-close" class="p-2 rounded-lg bg-red-600/80 hover:bg-red-600 text-white cursor-pointer ml-2" title="Cerrar (Esc)">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Image Display Box with Scroll/Pan -->
+    <div class="flex-1 overflow-auto flex items-center justify-center p-2 rounded-2xl bg-slate-900/60 border border-slate-800">
+      <img id="lightbox-img" src="" alt="Captura del sistema ampliada" class="lightbox-content max-w-full max-h-[82vh] object-contain rounded-xl shadow-2xl transition-transform duration-200">
+    </div>
+  </div>
+
+  <!-- Checkout & Direct WhatsApp Modal -->
+  <div id="contact-modal" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 border border-slate-200 shadow-2xl relative animate-scale-up">
+      <button id="close-modal" aria-label="Cerrar ventana emergente" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-2 cursor-pointer">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="text-center space-y-2 mb-6">
+        <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-600 mx-auto flex items-center justify-center shadow-inner">
+          <i data-lucide="message-circle" class="w-6 h-6"></i>
+        </div>
+        <h3 class="text-lg sm:text-xl font-bold text-slate-900 font-heading" id="modal-title">Prueba en Vivo en WhatsApp</h3>
+        <p class="text-xs text-slate-600" id="modal-desc">
+          Te redirigiremos a nuestro asistente de demostración oficial en WhatsApp para que compruebes las respuestas en tiempo real.
+        </p>
+      </div>
+
+      <div class="space-y-4">
+        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-1">
+          <p class="font-semibold text-slate-700">Número de Prueba Configurado:</p>
+          <p class="font-mono text-emerald-700 font-bold" id="modal-phone-display">+593 99 631 9321 (Demo Activo)</p>
+          <p class="text-[11px] text-slate-500">Puedes escribir cualquier consulta sobre productos, horarios o cotizaciones.</p>
+        </div>
+
+        <a id="modal-wa-link" href="https://wa.me/593996319321?text=Hola" target="_blank" class="w-full py-3.5 px-4 rounded-xl bg-[#25D366] hover:bg-[#20ba59] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition-all">
+          <i data-lucide="message-square" class="w-4 h-4"></i>
+          <span>Abrir WhatsApp Ahora</span>
+        </a>
+
+        <button id="modal-cancel-btn" class="w-full py-2.5 text-xs text-slate-500 hover:text-slate-700 font-semibold cursor-pointer">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Sticky WhatsApp Widget -->
+  <div class="fixed bottom-6 right-6 z-40 flex flex-col items-end">
+    <!-- Teaser Card -->
+    <div id="floating-wa-teaser" class="mb-3 bg-white p-3 rounded-2xl shadow-xl border border-slate-200 max-w-[210px] text-xs space-y-1 relative animate-bounce">
+      <button id="close-wa-teaser" class="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-[10px] font-bold cursor-pointer">×</button>
+      <p class="font-bold text-slate-800">¿Tienes dudas?</p>
+      <p class="text-[11px] text-slate-500">Chatea en vivo con nuestro bot en WhatsApp.</p>
+    </div>
+
+    <!-- Floating Circular Button -->
+    <button id="floating-wa-btn" aria-label="Abrir WhatsApp en vivo" class="w-14 h-14 rounded-full bg-[#25D366] hover:bg-[#20ba59] text-white flex items-center justify-center shadow-xl shadow-emerald-600/30 hover:scale-105 transition-transform cursor-pointer relative floating-widget">
+      <i data-lucide="message-circle" class="w-7 h-7"></i>
+      <span class="absolute top-0 right-0 w-4 h-4 rounded-full bg-red-500 border-2 border-white text-[9px] font-bold text-white flex items-center justify-center">1</span>
+    </button>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
