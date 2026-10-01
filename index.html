@@ -32,6 +32,12 @@
     }
   </script>
 
+  <!-- Application State & Components (Alpine.js) -->
+  <script defer src="script.js"></script>
+  <!-- Alpine.js Plugins & Core CDN -->
+  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
+
   <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
@@ -39,8 +45,16 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 
   <link rel="stylesheet" href="styles.css">
+  <style>
+    [x-cloak] { display: none !important; }
+  </style>
 </head>
-<body class="bg-slate-50 text-slate-900 font-sans antialiased selection:bg-emerald-500 selection:text-white">
+<body class="bg-slate-50 text-slate-900 font-sans antialiased selection:bg-emerald-500 selection:text-white"
+      x-data="{
+        ...lightboxApp(),
+        ...whatsappModalApp()
+      }"
+      @keydown.escape.window="close(); closeModal()">
 
   <!-- Top Announcement Bar -->
   <aside aria-label="Aviso informativo" class="bg-slate-900 text-slate-300 text-xs py-2 px-4 text-center flex items-center justify-center gap-2 border-b border-slate-800">
@@ -49,13 +63,16 @@
     <a href="#simulador" class="underline hover:text-white font-semibold ml-1">Ver demostración &rarr;</a>
   </aside>
 
-  <!-- Navbar -->
-  <header class="sticky top-0 z-40 transition-all duration-300 backdrop-blur-md bg-white/95 border-b border-slate-200/80" id="main-nav">
+  <!-- Navbar with Alpine.js reactive scroll and mobile menu -->
+  <header class="sticky top-0 z-40 transition-all duration-300 backdrop-blur-md border-b"
+          x-data="navController()"
+          :class="scrolled ? 'nav-scrolled' : 'bg-white/95 border-slate-200/80'"
+          id="main-nav">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
       
       <!-- Official Logo Brand -->
       <a href="#" class="flex items-center gap-3 group">
-        <img src="assets/nexusend_header.png" alt="NexuSend Plataforma WhatsApp" class="h-10 sm:h-12 w-auto object-contain">
+        <img src="assets/nexusend_header.png" alt="NexuSend Plataforma WhatsApp" class="h-10 sm:h-12 w-auto object-contain transition-transform group-hover:scale-105">
       </a>
 
       <!-- Desktop Nav Links -->
@@ -73,50 +90,62 @@
 
       <!-- Action Buttons -->
       <div class="hidden sm:flex items-center gap-3">
-        <button class="open-demo-trigger inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold shadow-sm hover:border-slate-400 transition-all cursor-pointer">
+        <button @click="openModal()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold shadow-sm hover:border-slate-400 transition-all cursor-pointer">
           <i data-lucide="message-circle" class="w-4 h-4 text-emerald-600"></i>
           <span>Chat de Demostración</span>
         </button>
         <a href="#planes" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md shadow-emerald-600/20 hover:shadow-lg transition-all cursor-pointer">
-          <span>Ver Planes Disponibles</span>
+          <span>Ver Planes</span>
+          <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
         </a>
       </div>
 
       <!-- Mobile Menu Button -->
-      <div class="flex items-center md:hidden">
-        <button id="mobile-menu-btn" aria-label="Abrir menú" class="p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100">
-          <i data-lucide="menu" class="w-6 h-6"></i>
-        </button>
-      </div>
+      <button @click="mobileMenuOpen = !mobileMenuOpen"
+              class="md:hidden p-2 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 focus:outline-none"
+              aria-label="Abrir menú de navegación">
+        <i data-lucide="menu" class="w-6 h-6" x-show="!mobileMenuOpen"></i>
+        <i data-lucide="x" class="w-6 h-6" x-show="mobileMenuOpen" x-cloak></i>
+      </button>
 
     </div>
 
-    <!-- Mobile Dropdown Menu -->
-    <div id="mobile-menu" class="hidden md:hidden border-b border-slate-200 bg-white px-4 pt-3 pb-6 space-y-3">
-      <a href="#simulador" class="block py-2 text-sm font-semibold text-slate-700 hover:text-emerald-600">Simulador Interactivo</a>
-      <a href="#capturas" class="block py-2 text-sm font-semibold text-slate-700 hover:text-emerald-600">Capturas del Sistema HD</a>
-      <a href="#vision-ocr" class="block py-2 text-sm font-semibold text-slate-700 hover:text-emerald-600">Lectura de Archivos</a>
-      <a href="#calculadora" class="block py-2 text-sm font-semibold text-slate-700 hover:text-emerald-600">Calculadora de Ahorro</a>
-      <a href="#planes" class="block py-2 text-sm font-semibold text-slate-700 hover:text-emerald-600">Planes y Precios</a>
-      <a href="#faq" class="block py-2 text-sm font-semibold text-slate-700 hover:text-emerald-600">Preguntas Frecuentes</a>
-      <div class="pt-3 border-t border-slate-100 space-y-2">
-        <button class="open-demo-trigger w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-slate-300 bg-slate-50 text-slate-800 text-xs font-bold">
+    <!-- Mobile Drawer Transition -->
+    <div x-show="mobileMenuOpen"
+         x-cloak
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0 -translate-y-2"
+         x-transition:enter-end="opacity-100 translate-y-0"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100 translate-y-0"
+         x-transition:leave-end="opacity-0 -translate-y-2"
+         class="md:hidden bg-white/98 border-b border-slate-200 px-6 py-5 space-y-4 shadow-xl">
+      <a href="#simulador" @click="mobileMenuOpen = false" class="block text-sm font-semibold text-slate-700 hover:text-emerald-600 py-1">Simulador Interactivo</a>
+      <a href="#capturas" @click="mobileMenuOpen = false" class="block text-sm font-semibold text-slate-700 hover:text-emerald-600 py-1">Capturas del Sistema HD</a>
+      <a href="#vision-ocr" @click="mobileMenuOpen = false" class="block text-sm font-semibold text-slate-700 hover:text-emerald-600 py-1">Lectura de Fotos & PDFs</a>
+      <a href="#calculadora" @click="mobileMenuOpen = false" class="block text-sm font-semibold text-slate-700 hover:text-emerald-600 py-1">Calculadora de Ahorro</a>
+      <a href="#planes" @click="mobileMenuOpen = false" class="block text-sm font-semibold text-slate-700 hover:text-emerald-600 py-1">Planes y Precios</a>
+      <a href="#faq" @click="mobileMenuOpen = false" class="block text-sm font-semibold text-slate-700 hover:text-emerald-600 py-1">Preguntas Frecuentes</a>
+      
+      <div class="pt-3 border-t border-slate-100 flex flex-col gap-2.5">
+        <button @click="openModal(); mobileMenuOpen = false" class="w-full py-3 rounded-xl border border-slate-300 text-center font-bold text-xs text-slate-700 bg-slate-50 flex items-center justify-center gap-2">
           <i data-lucide="message-circle" class="w-4 h-4 text-emerald-600"></i>
-          <span>Probar Asistente en WhatsApp</span>
+          <span>Chat de Demostración</span>
         </button>
-        <a href="#planes" class="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-emerald-600 text-white text-xs font-bold shadow-md">
-          <span>Ver Planes desde $19.90</span>
+        <a href="#planes" @click="mobileMenuOpen = false" class="w-full py-3 rounded-xl bg-emerald-600 text-center font-bold text-xs text-white shadow-md flex items-center justify-center gap-2">
+          <span>Ver Planes y Precios</span>
+          <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
         </a>
       </div>
     </div>
   </header>
 
-  <!-- Hero Section (Subtle, professional, realistic tone) -->
-  <section class="relative pt-12 pb-20 md:pt-20 md:pb-28 overflow-hidden bg-gradient-to-b from-white via-slate-50/60 to-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
+  <!-- Hero Section -->
+  <section class="relative pt-12 pb-20 md:pt-20 md:pb-28 overflow-hidden bg-gradient-to-b from-white via-slate-50/50 to-slate-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-7 relative z-10">
       
-      <!-- Pill Badge -->
-      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold shadow-sm">
+      <!-- Tag Badge -->
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-xs font-semibold shadow-sm animate-pulse">
         <span class="flex h-2 w-2 rounded-full bg-emerald-500"></span>
         <span>Software de Gestión y Automatización de Atención Comercial</span>
       </div>
@@ -133,19 +162,19 @@
 
       <!-- Key Pillars Bar -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto pt-2">
-        <div class="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-sm text-center">
+        <div class="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-sm text-center hover:shadow-md transition-shadow">
           <p class="text-2xl font-extrabold text-emerald-600 font-heading">Inmediato</p>
           <p class="text-xs text-slate-500 mt-0.5">Respuestas en segundos</p>
         </div>
-        <div class="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-sm text-center">
+        <div class="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-sm text-center hover:shadow-md transition-shadow">
           <p class="text-2xl font-extrabold text-slate-900 font-heading">En la Nube</p>
           <p class="text-xs text-slate-500 mt-0.5">Sin dejar tu PC encendida</p>
         </div>
-        <div class="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-sm text-center">
+        <div class="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-sm text-center hover:shadow-md transition-shadow">
           <p class="text-2xl font-extrabold text-indigo-600 font-heading">Control Total</p>
           <p class="text-xs text-slate-500 mt-0.5">Pausa con asesor humano</p>
         </div>
-        <div class="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-sm text-center">
+        <div class="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-sm text-center hover:shadow-md transition-shadow">
           <p class="text-2xl font-extrabold text-teal-600 font-heading">Organizado</p>
           <p class="text-xs text-slate-500 mt-0.5">Bandeja multidispositivo</p>
         </div>
@@ -173,8 +202,8 @@
     </div>
   </section>
 
-  <!-- Interactive Multi-Industry WhatsApp Simulator -->
-  <section id="simulador" class="py-20 bg-white border-t border-b border-slate-200/80 relative">
+  <!-- Interactive Multi-Industry WhatsApp Simulator (Alpine.js State) -->
+  <section id="simulador" class="py-20 bg-white border-t border-b border-slate-200/80 relative" x-data="simulatorApp()">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       
       <div class="text-center max-w-3xl mx-auto space-y-3 mb-10">
@@ -188,13 +217,19 @@
 
         <!-- Industry Selector Tabs -->
         <div class="inline-flex p-1.5 rounded-2xl bg-slate-100 border border-slate-200 text-xs font-bold mt-2 gap-1 flex-wrap justify-center">
-          <button class="industry-tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 text-white shadow-sm transition-all cursor-pointer flex items-center gap-2" data-industry="papeleria">
+          <button @click="loadScenario('papeleria')"
+                  class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2"
+                  :class="industry === 'papeleria' ? 'bg-emerald-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'">
             <span>🎒 Papelería & Suministros</span>
           </button>
-          <button class="industry-tab-btn px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-200 transition-all cursor-pointer flex items-center gap-2" data-industry="ferreteria">
+          <button @click="loadScenario('ferreteria')"
+                  class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2"
+                  :class="industry === 'ferreteria' ? 'bg-emerald-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'">
             <span>🏗️ Ferretería & Materiales</span>
           </button>
-          <button class="industry-tab-btn px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-200 transition-all cursor-pointer flex items-center gap-2" data-industry="servicios">
+          <button @click="loadScenario('servicios')"
+                  class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2"
+                  :class="industry === 'servicios' ? 'bg-emerald-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'">
             <span>🩺 Consultorios & Servicios</span>
           </button>
         </div>
@@ -214,78 +249,137 @@
               <span class="text-[10px] text-slate-400 font-semibold">Interactúa aquí</span>
             </div>
 
-            <!-- Chips Container dynamically loaded by script.js -->
-            <div class="flex flex-col gap-2.5" id="sim-chips-container"></div>
+            <!-- Chips Container loaded reactively by Alpine -->
+            <div class="flex flex-col gap-2.5">
+              <template x-for="(chip, idx) in currentData.chips" :key="idx">
+                <button @click="sendQuickChip(chip.msg)"
+                        class="w-full text-left p-3 rounded-2xl bg-white hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 transition-all text-xs font-medium text-slate-700 hover:text-emerald-950 flex items-center justify-between group shadow-xs cursor-pointer">
+                  <span class="truncate pr-2" x-text="chip.label"></span>
+                  <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-transform shrink-0"></i>
+                </button>
+              </template>
+            </div>
           </div>
 
-          <!-- Real Phone Demo Card -->
-          <div class="bg-gradient-to-br from-emerald-500/10 via-teal-500/5 to-indigo-500/10 p-6 rounded-3xl border border-emerald-500/30 text-center space-y-3">
-            <div class="w-10 h-10 mx-auto rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-md">
-              <i data-lucide="smartphone" class="w-5 h-5"></i>
+          <!-- Direct Test on Physical WhatsApp Card -->
+          <div class="p-5 rounded-3xl bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 space-y-3">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+                <i data-lucide="smartphone" class="w-5 h-5"></i>
+              </div>
+              <div class="space-y-1">
+                <h4 class="font-bold text-slate-900 text-xs sm:text-sm">¿Deseas probarlo con tu propio celular?</h4>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                  Escríbele directamente a nuestro número de demostración oficial en WhatsApp para recibir respuestas reales:
+                </p>
+              </div>
             </div>
-            <h4 class="font-bold text-slate-900 text-sm">¿Deseas probarlo en tu propio WhatsApp?</h4>
-            <p class="text-xs text-slate-600 leading-relaxed">
-              Escríbele directamente a nuestro asistente oficial de demostración y comprueba la velocidad en tu celular.
-            </p>
-            <button class="open-demo-trigger w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm cursor-pointer transition-all">
-              <i data-lucide="message-square" class="w-4 h-4"></i>
-              <span>Abrir Chat de Demostración</span>
+            <button @click="openModal()" class="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer">
+              <i data-lucide="message-circle" class="w-4 h-4"></i>
+              <span>Abrir WhatsApp Demo en Vivo</span>
             </button>
           </div>
         </div>
 
-        <!-- Right: Smartphone Chat Mockup -->
+        <!-- Right: Mobile Device WhatsApp Mockup -->
         <div class="lg:col-span-7 flex justify-center">
-          <div class="w-full max-w-[390px] bg-slate-900 rounded-[46px] p-3.5 shadow-2xl border-4 border-slate-800 relative">
+          <div class="w-full max-w-[390px] rounded-[44px] p-3.5 bg-slate-900 shadow-2xl border-4 border-slate-800 relative">
             
-            <!-- Dynamic Island -->
-            <div class="absolute top-5 left-1/2 -translate-x-1/2 w-28 h-4 bg-slate-950 rounded-full z-20"></div>
+            <!-- Phone Notch Speaker -->
+            <div class="absolute top-5 left-1/2 -translate-x-1/2 w-28 h-4 bg-slate-950 rounded-full z-30 flex items-center justify-center">
+              <div class="w-10 h-1 rounded-full bg-slate-800"></div>
+            </div>
 
-            <!-- Phone Screen -->
-            <div class="bg-[#efeae2] rounded-[38px] overflow-hidden flex flex-col h-[590px] relative border border-slate-700/60 wa-bg-chat">
+            <!-- WhatsApp Screen Interface -->
+            <div class="bg-white rounded-[34px] overflow-hidden flex flex-col h-[580px] shadow-inner relative">
               
-              <!-- WhatsApp Header -->
-              <div class="bg-[#075e54] text-white px-3.5 py-3 pt-6 flex items-center justify-between shrink-0 shadow">
+              <!-- WhatsApp Top Header -->
+              <div class="bg-[#075e54] text-white p-3 pt-6 flex items-center justify-between shrink-0 shadow z-20">
                 <div class="flex items-center gap-2.5">
-                  <i data-lucide="arrow-left" class="w-4 h-4 text-white/80 cursor-pointer"></i>
-                  <img src="assets/icon_crop.png" alt="NexuSend" class="w-8 h-8 rounded-full bg-white/20 p-0.5 object-cover">
+                  <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-xs border border-white/30">
+                    <span x-text="industry === 'papeleria' ? '🎒' : industry === 'ferreteria' ? '🏗️' : '🩺'"></span>
+                  </div>
                   <div>
-                    <h4 class="text-xs font-bold leading-tight" id="sim-brand-title">Atención Comercial</h4>
-                    <p class="text-[10px] text-emerald-200 flex items-center gap-1" id="sim-brand-sub">
-                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                      En línea • Asistente Oficial
-                    </p>
+                    <h3 class="font-bold text-xs leading-none truncate max-w-[155px]" x-text="currentData.title"></h3>
+                    <p class="text-[10px] text-emerald-200 mt-0.5 leading-none" x-text="currentData.subtitle"></p>
                   </div>
                 </div>
-                <div class="flex items-center gap-2.5 text-white/80">
-                  <button id="sim-sound-btn" aria-label="Silenciar o activar sonidos" class="p-1 hover:text-white cursor-pointer" title="Sonido">
-                    <i data-lucide="volume-2" class="w-4 h-4"></i>
+                
+                <div class="flex items-center gap-2">
+                  <button @click="toggleSound()" class="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer" title="Activar/Silenciar Sonido">
+                    <i data-lucide="volume-2" class="w-4 h-4" x-show="soundEnabled"></i>
+                    <i data-lucide="volume-x" class="w-4 h-4" x-show="!soundEnabled" x-cloak></i>
                   </button>
-                  <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                  <i data-lucide="more-vertical" class="w-4 h-4 text-white/80"></i>
                 </div>
               </div>
 
-              <!-- Chat Message Stream -->
-              <div class="flex-1 p-3.5 overflow-y-auto space-y-3 font-sans text-xs" id="sim-messages"></div>
-
-              <!-- Typing indicator -->
-              <div id="sim-typing" class="hidden px-4 py-1.5 text-[11px] text-slate-500 italic flex items-center gap-2 bg-white/70 backdrop-blur-sm border-t border-slate-200/50">
-                <div class="flex items-center gap-1">
-                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 typing-dot"></span>
-                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 typing-dot"></span>
-                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 typing-dot"></span>
+              <!-- Message Stream Area -->
+              <div id="sim-messages" class="flex-1 p-3 overflow-y-auto space-y-3 wa-bg-chat">
+                
+                <!-- Security Notice -->
+                <div class="text-center my-2">
+                  <span class="bg-[#ffeecd] text-[#54656f] text-[10px] px-2.5 py-1 rounded-lg shadow-2xs inline-block max-w-[90%] leading-tight">
+                    🔒 Los mensajes y llamadas están cifrados de extremo a extremo. Demostración interactiva NexuSend.
+                  </span>
                 </div>
-                <span>Escribiendo respuesta...</span>
+
+                <!-- Messages loop -->
+                <template x-for="(msg, index) in messages" :key="index">
+                  <div>
+                    <!-- User bubble -->
+                    <template x-if="msg.isUser">
+                      <div class="flex justify-end msg-bubble">
+                        <div class="bg-[#d9fdd3] text-slate-900 p-3 rounded-2xl rounded-tr-none shadow-xs max-w-[85%] border border-emerald-300/40 text-xs leading-relaxed">
+                          <p x-text="msg.text"></p>
+                          <div class="flex justify-end items-center gap-1 mt-1 text-[10px] text-slate-500">
+                            <span x-text="msg.time"></span>
+                            <span class="text-[#53bdeb] font-bold">✓✓</span>
+                          </div>
+                        </div>
+                      </div>
+                    </template>
+
+                    <!-- Bot bubble -->
+                    <template x-if="!msg.isUser">
+                      <div class="flex justify-start msg-bubble">
+                        <div class="bg-white text-slate-800 p-3 rounded-2xl rounded-tl-none shadow-xs max-w-[90%] border border-slate-200/80 text-xs leading-relaxed">
+                          <div x-html="msg.html"></div>
+                          <div class="flex justify-end items-center gap-1 mt-1 text-[10px] text-slate-400">
+                            <span x-text="msg.time"></span>
+                          </div>
+                        </div>
+                      </div>
+                    </template>
+                  </div>
+                </template>
+
+                <!-- Typing indicator -->
+                <div x-show="isTyping" x-cloak class="flex justify-start msg-bubble">
+                  <div class="bg-white text-slate-600 px-3.5 py-2.5 rounded-2xl rounded-tl-none shadow-xs border border-slate-200 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-slate-400 typing-dot"></span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-slate-400 typing-dot"></span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-slate-400 typing-dot"></span>
+                    <span class="text-[10px] text-slate-400 ml-1">Escribiendo...</span>
+                  </div>
+                </div>
+
               </div>
 
               <!-- Chat Input Bar -->
               <div class="bg-[#f0f2f5] p-2 flex items-center gap-2 border-t border-slate-200">
                 <div class="flex-1 bg-white rounded-full px-3.5 py-2 flex items-center gap-2 shadow-sm border border-slate-200">
                   <i data-lucide="smile" class="w-4 h-4 text-slate-400"></i>
-                  <input type="text" id="sim-input" placeholder="Escribe una consulta..." class="flex-1 bg-transparent border-0 outline-none text-xs text-slate-800 placeholder-slate-400">
+                  <input type="text"
+                         x-model="inputMessage"
+                         @keydown.enter.prevent="sendFromInput()"
+                         placeholder="Escribe una consulta..."
+                         class="flex-1 bg-transparent border-0 outline-none text-xs text-slate-800 placeholder-slate-400">
                   <i data-lucide="paperclip" class="w-4 h-4 text-slate-400"></i>
                 </div>
-                <button id="sim-send-btn" aria-label="Enviar mensaje" class="w-9 h-9 rounded-full bg-[#00a884] hover:bg-[#008f6f] text-white flex items-center justify-center shrink-0 shadow transition-all cursor-pointer">
+                <button @click="sendFromInput()"
+                        aria-label="Enviar mensaje"
+                        class="w-9 h-9 rounded-full bg-[#00a884] hover:bg-[#008f6f] text-white flex items-center justify-center shrink-0 shadow transition-all cursor-pointer">
                   <i data-lucide="send" class="w-4 h-4 ml-0.5"></i>
                 </button>
               </div>
@@ -317,10 +411,8 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         
         <!-- Screenshot 1: Real Live Chat Inbox -->
-        <div class="screenshot-trigger group bg-white rounded-3xl p-4 border border-slate-200 shadow-sm hover:shadow-xl hover:border-emerald-300 transition-all cursor-pointer"
-             data-src="assets/real-dashboard-chat.png"
-             data-title="Bandeja de Entrada en Vivo y Gestión de Asesores"
-             data-desc="Permite a tu equipo responder directamente desde la computadora o el celular. La IA se pausa de forma automática al intervenir un asesor.">
+        <div @click="openImage('assets/real-dashboard-chat.png', 'Bandeja de Entrada en Vivo y Gestión de Asesores', 'Permite a tu equipo responder directamente desde la computadora o el celular. La IA se pausa de forma automática al intervenir un asesor.')"
+             class="group bg-white rounded-3xl p-4 border border-slate-200 shadow-sm hover:shadow-xl hover:border-emerald-300 transition-all cursor-pointer">
           <div class="relative overflow-hidden rounded-2xl aspect-[16/10] bg-slate-100">
             <img src="assets/real-dashboard-chat.png" alt="Bandeja de Chats en Vivo NexuSend" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
             <div class="absolute inset-0 bg-slate-950/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -340,10 +432,8 @@
         </div>
 
         <!-- Screenshot 2: Real Campaign Scheduler with Spintax -->
-        <div class="screenshot-trigger group bg-white rounded-3xl p-4 border border-slate-200 shadow-sm hover:shadow-xl hover:border-emerald-300 transition-all cursor-pointer"
-             data-src="assets/real-campaigns-modal.png"
-             data-title="Programación de Campañas y Notificaciones con Spintax"
-             data-desc="Envía avisos y promociones rotando textos y saludos de forma segura con intervalos programados.">
+        <div @click="openImage('assets/real-campaigns-modal.png', 'Programación de Campañas y Notificaciones con Spintax', 'Envía avisos y promociones rotando textos y saludos de forma segura con intervalos programados.')"
+             class="group bg-white rounded-3xl p-4 border border-slate-200 shadow-sm hover:shadow-xl hover:border-emerald-300 transition-all cursor-pointer">
           <div class="relative overflow-hidden rounded-2xl aspect-[16/10] bg-slate-100">
             <img src="assets/real-campaigns-modal.png" alt="Campañas Masivas con Spintax" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
             <div class="absolute inset-0 bg-slate-950/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -363,10 +453,8 @@
         </div>
 
         <!-- Screenshot 3: Real Campaign Delivery Analytics -->
-        <div class="screenshot-trigger group bg-white rounded-3xl p-4 border border-slate-200 shadow-sm hover:shadow-xl hover:border-emerald-300 transition-all cursor-pointer"
-             data-src="assets/real-campaign-details.png"
-             data-title="Reportes de Entrega y Lectura de Mensajes"
-             data-desc="Supervisa con claridad cuántos mensajes llegaron a destino, cuántos fueron leídos y el estado de cada contacto.">
+        <div @click="openImage('assets/real-campaign-details.png', 'Reportes de Entrega y Lectura de Mensajes', 'Supervisa con claridad cuántos mensajes llegaron a destino, cuántos fueron leídos y el estado de cada contacto.')"
+             class="group bg-white rounded-3xl p-4 border border-slate-200 shadow-sm hover:shadow-xl hover:border-emerald-300 transition-all cursor-pointer">
           <div class="relative overflow-hidden rounded-2xl aspect-[16/10] bg-slate-100">
             <img src="assets/real-campaign-details.png" alt="Reporte de Envíos" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
             <div class="absolute inset-0 bg-slate-950/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -386,10 +474,8 @@
         </div>
 
         <!-- Screenshot 4: Real OCR Vision in Papelería -->
-        <div class="screenshot-trigger group bg-white rounded-3xl p-4 border border-slate-200 shadow-sm hover:shadow-xl hover:border-emerald-300 transition-all cursor-pointer"
-             data-src="assets/real-papeleria-vision.png"
-             data-title="Reconocimiento Óptico de Fotos de Listas y Notas"
-             data-desc="La IA analiza imágenes recibidas en el chat y extrae los productos solicitados para brindar cotizaciones ordenadas.">
+        <div @click="openImage('assets/real-papeleria-vision.png', 'Reconocimiento Óptico de Fotos de Listas y Notas', 'La IA analiza imágenes recibidas en el chat y extrae los productos solicitados para brindar cotizaciones ordenadas.')"
+             class="group bg-white rounded-3xl p-4 border border-slate-200 shadow-sm hover:shadow-xl hover:border-emerald-300 transition-all cursor-pointer">
           <div class="relative overflow-hidden rounded-2xl aspect-[16/10] bg-slate-100">
             <img src="assets/real-papeleria-vision.png" alt="Lectura de Imágenes en WhatsApp" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500">
             <div class="absolute inset-0 bg-slate-950/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -409,10 +495,8 @@
         </div>
 
         <!-- Screenshot 5: Real PDF Processing -->
-        <div class="screenshot-trigger group bg-white rounded-3xl p-4 border border-slate-200 shadow-sm hover:shadow-xl hover:border-emerald-300 transition-all cursor-pointer"
-             data-src="assets/real-papeleria-pdf.png"
-             data-title="Recepción Ordenada de Archivos y Documentos PDF"
-             data-desc="El sistema confirma la recepción de documentos enviados por clientes y solicita especificaciones de trabajo con amabilidad.">
+        <div @click="openImage('assets/real-papeleria-pdf.png', 'Recepción Ordenada de Archivos y Documentos PDF', 'El sistema confirma la recepción de documentos enviados por clientes y solicita especificaciones de trabajo con amabilidad.')"
+             class="group bg-white rounded-3xl p-4 border border-slate-200 shadow-sm hover:shadow-xl hover:border-emerald-300 transition-all cursor-pointer">
           <div class="relative overflow-hidden rounded-2xl aspect-[16/10] bg-slate-100">
             <img src="assets/real-papeleria-pdf.png" alt="Recepción de PDFs en WhatsApp" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500">
             <div class="absolute inset-0 bg-slate-950/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -432,10 +516,8 @@
         </div>
 
         <!-- Card 6: Dashboard Overview -->
-        <div class="screenshot-trigger group bg-white rounded-3xl p-4 border border-slate-200 shadow-sm hover:shadow-xl hover:border-emerald-300 transition-all cursor-pointer"
-             data-src="assets/dashboard-preview.jpg"
-             data-title="Panel Principal para Administradores de Empresa"
-             data-desc="Vista general de contactos registrados, volumen de mensajes procesados y accesos de usuarios del equipo.">
+        <div @click="openImage('assets/dashboard-preview.jpg', 'Panel Principal para Administradores de Empresa', 'Vista general de contactos registrados, volumen de mensajes procesados y accesos de usuarios del equipo.')"
+             class="group bg-white rounded-3xl p-4 border border-slate-200 shadow-sm hover:shadow-xl hover:border-emerald-300 transition-all cursor-pointer">
           <div class="relative overflow-hidden rounded-2xl aspect-[16/10] bg-slate-100">
             <img src="assets/dashboard-preview.jpg" alt="Panel General NexuSend" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
             <div class="absolute inset-0 bg-slate-950/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -459,8 +541,8 @@
     </div>
   </section>
 
-  <!-- Practical Multimodal OCR Section (Subtle and realistic) -->
-  <section id="vision-ocr" class="py-20 bg-white border-t border-slate-200">
+  <!-- Practical Multimodal OCR Section (Alpine.js State) -->
+  <section id="vision-ocr" class="py-20 bg-white border-t border-slate-200" x-data="ocrScanner()">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       
       <div class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-[36px] p-8 sm:p-12 text-white shadow-xl relative overflow-hidden">
@@ -481,9 +563,11 @@
               En lugar de pasar minutos transcribiendo una lista escolar manuscrita o un pedido con varios artículos, la tecnología visual de la plataforma ayuda a interpretar la imagen y generar una cotización detallada según tu catálogo.
             </p>
 
-            <button id="demo-scan-btn" class="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs shadow-md transition-all cursor-pointer">
-              <i data-lucide="scan-line" class="w-4 h-4"></i>
-              <span>Simular Lectura de Lista en Vivo</span>
+            <button @click="triggerScan()"
+                    :disabled="isScanning"
+                    class="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs shadow-md transition-all cursor-pointer disabled:opacity-50">
+              <i data-lucide="scan-line" class="w-4 h-4" :class="isScanning ? 'animate-spin' : ''"></i>
+              <span x-text="isScanning ? 'Escaneando con IA...' : 'Simular Lectura de Lista en Vivo'"></span>
             </button>
           </div>
 
@@ -492,14 +576,24 @@
               
               <div class="relative rounded-xl overflow-hidden aspect-[4/3] bg-slate-900">
                 <img src="assets/real-papeleria-vision.png" alt="Lectura de lista escolar" class="w-full h-full object-cover object-top opacity-90">
-                <div id="ocr-laser" class="hidden absolute left-0 right-0 h-1 bg-gradient-to-r from-transparent via-emerald-400 to-transparent shadow-[0_0_15px_#10b981] scanner-laser z-20"></div>
+                
+                <!-- Laser line transition -->
+                <div x-show="isScanning"
+                     x-cloak
+                     class="absolute left-0 right-0 h-1 bg-gradient-to-r from-transparent via-emerald-400 to-transparent shadow-[0_0_15px_#10b981] scanner-laser z-20"></div>
+                
                 <div class="absolute bottom-3 left-3 bg-slate-900/90 backdrop-blur-md px-3 py-1 rounded-lg border border-slate-700 text-[11px] text-emerald-300 font-mono">
                   <span>Ejemplo Real de Lista Escolar</span>
                 </div>
               </div>
 
               <!-- OCR Results Box -->
-              <div id="ocr-results-box" class="mt-3.5 p-3 rounded-xl bg-slate-900 border border-slate-700/80 text-xs space-y-1.5 transition-opacity">
+              <div x-show="scanComplete"
+                   x-cloak
+                   x-transition:enter="transition ease-out duration-300"
+                   x-transition:enter-start="opacity-0 translate-y-2"
+                   x-transition:enter-end="opacity-100 translate-y-0"
+                   class="mt-3.5 p-3 rounded-xl bg-slate-900 border border-slate-700/80 text-xs space-y-1.5">
                 <div class="flex items-center justify-between text-[11px] font-bold text-slate-400">
                   <span>Desglose Reconocido:</span>
                   <span class="text-emerald-400">Cotización Automática</span>
@@ -526,8 +620,8 @@
     </div>
   </section>
 
-  <!-- Interactive Time Savings Calculator (Realistic & grounded) -->
-  <section id="calculadora" class="py-20 bg-slate-50 border-t border-slate-200">
+  <!-- Interactive Time Savings Calculator (Alpine.js State) -->
+  <section id="calculadora" class="py-20 bg-slate-50 border-t border-slate-200" x-data="roiCalculator()">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
       
       <div class="bg-white rounded-3xl p-8 sm:p-12 border border-slate-200 shadow-md space-y-8">
@@ -542,14 +636,18 @@
           </p>
         </div>
 
-        <!-- Slider Controls -->
+        <!-- Slider Controls with Alpine binding -->
         <div class="space-y-6 max-w-2xl mx-auto">
           <div>
             <div class="flex justify-between items-center mb-2">
-              <label for="roi-chats-slider" class="text-xs sm:text-sm font-bold text-slate-700">Mensajes de clientes recibidos por día:</label>
-              <span id="roi-chats-val" class="text-base font-extrabold text-emerald-600">30 chats / día</span>
+              <label for="roi-chats" class="text-xs sm:text-sm font-bold text-slate-700">Mensajes de clientes recibidos por día:</label>
+              <span class="text-base font-extrabold text-emerald-600" x-text="chatsPerDay + ' chats / día'"></span>
             </div>
-            <input type="range" id="roi-chats-slider" min="5" max="150" value="30" step="5" class="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-600">
+            <input type="range"
+                   id="roi-chats"
+                   x-model.number="chatsPerDay"
+                   min="5" max="150" step="5"
+                   class="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-600">
             <div class="flex justify-between text-[10px] text-slate-400 mt-1">
               <span>5 chats</span>
               <span>50 chats</span>
@@ -560,10 +658,14 @@
 
           <div>
             <div class="flex justify-between items-center mb-2">
-              <label for="roi-ticket-slider" class="text-xs sm:text-sm font-bold text-slate-700">Valor promedio de una compra o servicio:</label>
-              <span id="roi-ticket-val" class="text-base font-extrabold text-emerald-600">$25 USD</span>
+              <label for="roi-ticket" class="text-xs sm:text-sm font-bold text-slate-700">Valor promedio de una compra o servicio:</label>
+              <span class="text-base font-extrabold text-emerald-600" x-text="'$' + avgTicket + ' USD'"></span>
             </div>
-            <input type="range" id="roi-ticket-slider" min="5" max="250" value="25" step="5" class="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-600">
+            <input type="range"
+                   id="roi-ticket"
+                   x-model.number="avgTicket"
+                   min="5" max="250" step="5"
+                   class="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-600">
             <div class="flex justify-between text-[10px] text-slate-400 mt-1">
               <span>$5 USD</span>
               <span>$50 USD</span>
@@ -573,23 +675,23 @@
           </div>
         </div>
 
-        <!-- Metrics Grid -->
+        <!-- Metrics Grid Computed Live -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-slate-100 text-center">
-          <div class="p-5 rounded-2xl bg-emerald-50/70 border border-emerald-200/70">
+          <div class="p-5 rounded-2xl bg-emerald-50/70 border border-emerald-200/70 hover:shadow-sm transition-shadow">
             <p class="text-[11px] font-bold text-emerald-900 uppercase tracking-wider">Horas de Trabajo Ahorradas</p>
-            <p id="roi-hours-result" class="text-3xl font-extrabold text-emerald-700 mt-1 font-heading">45 Horas</p>
+            <p class="text-3xl font-extrabold text-emerald-700 mt-1 font-heading" x-text="hoursSaved + ' Horas'"></p>
             <p class="text-[10px] text-emerald-600 mt-0.5">Tiempo mensual recuperado</p>
           </div>
 
-          <div class="p-5 rounded-2xl bg-teal-50/70 border border-teal-200/70">
+          <div class="p-5 rounded-2xl bg-teal-50/70 border border-teal-200/70 hover:shadow-sm transition-shadow">
             <p class="text-[11px] font-bold text-teal-900 uppercase tracking-wider">Consultas Fuera de Horario</p>
-            <p class="text-3xl font-extrabold text-teal-700 mt-1 font-heading">135 Chats</p>
+            <p class="text-3xl font-extrabold text-teal-700 mt-1 font-heading" x-text="afterHoursChats + ' Chats'"></p>
             <p class="text-[10px] text-teal-600 mt-0.5">Atendidos en noches y fines de semana</p>
           </div>
 
-          <div class="p-5 rounded-2xl bg-indigo-50/70 border border-indigo-200/70">
+          <div class="p-5 rounded-2xl bg-indigo-50/70 border border-indigo-200/70 hover:shadow-sm transition-shadow">
             <p class="text-[11px] font-bold text-indigo-900 uppercase tracking-wider">Ventas Potenciales Asistidas</p>
-            <p id="roi-sales-result" class="text-3xl font-extrabold text-indigo-700 mt-1 font-heading">+$1,125 USD</p>
+            <p class="text-3xl font-extrabold text-indigo-700 mt-1 font-heading" x-text="'+$' + salesAssisted.toLocaleString() + ' USD'"></p>
             <p class="text-[10px] text-indigo-600 mt-0.5">Consultas respondidas a tiempo</p>
           </div>
         </div>
@@ -599,8 +701,8 @@
     </div>
   </section>
 
-  <!-- Pricing Plans Section -->
-  <section id="planes" class="py-24 bg-white relative">
+  <!-- Pricing Plans Section (Alpine.js State) -->
+  <section id="planes" class="py-24 bg-white relative" x-data="pricingApp()">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       
       <div class="text-center max-w-3xl mx-auto space-y-4 mb-16">
@@ -613,10 +715,17 @@
         </p>
 
         <!-- Billing Period Toggle -->
-        <div class="inline-flex items-center gap-3 p-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-semibold mt-4">
-          <button id="btn-monthly" class="px-5 py-2 rounded-full bg-white text-slate-900 shadow-sm transition-all cursor-pointer font-bold">Facturación Mensual</button>
-          <button id="btn-annual" class="px-5 py-2 rounded-full text-slate-600 hover:text-slate-900 transition-all cursor-pointer">
-            Anual <span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full text-[10px] font-extrabold ml-1">2 Meses de Ahorro</span>
+        <div class="inline-flex items-center gap-1 p-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-semibold mt-4">
+          <button @click="setBilling('monthly')"
+                  class="px-5 py-2 rounded-full transition-all cursor-pointer font-bold"
+                  :class="billing === 'monthly' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'">
+            Facturación Mensual
+          </button>
+          <button @click="setBilling('annual')"
+                  class="px-5 py-2 rounded-full transition-all cursor-pointer flex items-center gap-1.5"
+                  :class="billing === 'annual' ? 'bg-white text-slate-900 shadow-sm font-bold' : 'text-slate-600 hover:text-slate-900'">
+            <span>Anual</span>
+            <span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full text-[10px] font-extrabold">2 Meses de Ahorro</span>
           </button>
         </div>
       </div>
@@ -636,7 +745,8 @@
             <p class="text-xs text-slate-500 mt-1 mb-6">Para pequeños negocios que desean automatizar consultas básicas y preguntas frecuentes.</p>
 
             <div class="flex items-baseline gap-1 mb-6">
-              <span class="text-4xl lg:text-5xl font-extrabold text-slate-900 font-heading plan-price-val" data-monthly="19.90" data-annual="16.50">$19.90</span>
+              <span class="text-4xl lg:text-5xl font-extrabold text-slate-900 font-heading"
+                    x-text="billing === 'monthly' ? '$19.90' : '$16.50'">$19.90</span>
               <span class="text-xs font-semibold text-slate-500">/ mes</span>
             </div>
 
@@ -666,7 +776,7 @@
           </div>
 
           <div class="pt-8">
-            <button class="buy-plan-btn w-full py-3.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-md transition-all cursor-pointer" data-plan="starter" data-price="19.90">
+            <button @click="openModal()" class="w-full py-3.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-md transition-all cursor-pointer">
               Contratar Plan Starter
             </button>
           </div>
@@ -689,7 +799,8 @@
             <p class="text-xs text-slate-500 mt-1 mb-6">Para comercios y empresas que atienden ventas, comparten catálogos y envían promociones.</p>
 
             <div class="flex items-baseline gap-1 mb-6">
-              <span class="text-4xl lg:text-5xl font-extrabold text-emerald-700 font-heading plan-price-val" data-monthly="29.90" data-annual="24.90">$29.90</span>
+              <span class="text-4xl lg:text-5xl font-extrabold text-emerald-700 font-heading"
+                    x-text="billing === 'monthly' ? '$29.90' : '$24.90'">$29.90</span>
               <span class="text-xs font-semibold text-slate-500">/ mes</span>
             </div>
 
@@ -723,7 +834,7 @@
           </div>
 
           <div class="pt-8">
-            <button class="buy-plan-btn w-full py-4 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-extrabold text-xs shadow-lg shadow-emerald-600/25 hover:shadow-xl transition-all cursor-pointer" data-plan="business" data-price="29.90">
+            <button @click="openModal()" class="w-full py-4 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-extrabold text-xs shadow-lg shadow-emerald-600/25 hover:shadow-xl transition-all cursor-pointer">
               Contratar Plan Business
             </button>
           </div>
@@ -741,7 +852,8 @@
             <p class="text-xs text-slate-500 mt-1 mb-6">Para empresas con alto flujo que requieren doble línea de WhatsApp y seguimiento comercial.</p>
 
             <div class="flex items-baseline gap-1 mb-6">
-              <span class="text-4xl lg:text-5xl font-extrabold text-indigo-600 font-heading plan-price-val" data-monthly="49.90" data-annual="39.90">$49.90</span>
+              <span class="text-4xl lg:text-5xl font-extrabold text-indigo-600 font-heading"
+                    x-text="billing === 'monthly' ? '$49.90' : '$39.90'">$49.90</span>
               <span class="text-xs font-semibold text-slate-500">/ mes</span>
             </div>
 
@@ -771,7 +883,7 @@
           </div>
 
           <div class="pt-8">
-            <button class="buy-plan-btn w-full py-3.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md transition-all cursor-pointer" data-plan="pro" data-price="49.90">
+            <button @click="openModal()" class="w-full py-3.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md transition-all cursor-pointer">
               Contratar Plan Pro
             </button>
           </div>
@@ -782,8 +894,8 @@
     </div>
   </section>
 
-  <!-- FAQ Section -->
-  <section id="faq" class="py-20 bg-slate-50 border-t border-slate-200">
+  <!-- FAQ Section (Alpine.js Collapse Accordion) -->
+  <section id="faq" class="py-20 bg-slate-50 border-t border-slate-200" x-data="faqApp()">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       
       <div class="text-center space-y-3 mb-12">
@@ -794,43 +906,51 @@
 
       <div class="space-y-4">
         
-        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-          <button class="faq-btn w-full p-5 text-left font-bold text-slate-900 text-xs sm:text-sm flex items-center justify-between hover:bg-slate-50 transition-colors cursor-pointer">
+        <!-- FAQ 1 -->
+        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
+          <button @click="toggle(1)"
+                  class="w-full p-5 text-left font-bold text-slate-900 text-xs sm:text-sm flex items-center justify-between hover:bg-slate-50 transition-colors cursor-pointer">
             <span>¿Necesito dejar mi computadora o laptop encendida?</span>
-            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform"></i>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform duration-200" :class="active === 1 ? 'rotate-180 text-emerald-600' : ''"></i>
           </button>
-          <div class="faq-content hidden px-5 pb-5 text-xs text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
+          <div x-show="active === 1" x-collapse x-cloak class="px-5 pb-5 text-xs text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
             <strong>No.</strong> NexuSend se ejecuta en servidores dedicados en la nube. Tu línea de WhatsApp responderá aunque apagues tu equipo, te quedes sin batería o tu celular no tenga conexión en ese momento.
           </div>
         </div>
 
-        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-          <button class="faq-btn w-full p-5 text-left font-bold text-slate-900 text-xs sm:text-sm flex items-center justify-between hover:bg-slate-50 transition-colors cursor-pointer">
+        <!-- FAQ 2 -->
+        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
+          <button @click="toggle(2)"
+                  class="w-full p-5 text-left font-bold text-slate-900 text-xs sm:text-sm flex items-center justify-between hover:bg-slate-50 transition-colors cursor-pointer">
             <span>¿Puedo seguir respondiendo manualmente cuando lo desee?</span>
-            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform"></i>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform duration-200" :class="active === 2 ? 'rotate-180 text-emerald-600' : ''"></i>
           </button>
-          <div class="faq-content hidden px-5 pb-5 text-xs text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
+          <div x-show="active === 2" x-collapse x-cloak class="px-5 pb-5 text-xs text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
             <strong>Sí, en cualquier instante.</strong> Puedes responder desde la bandeja web de NexuSend o directamente desde tu aplicación de WhatsApp en el celular. Al enviar un mensaje, el sistema pausa las respuestas automáticas de ese contacto para no interrumpirte.
           </div>
         </div>
 
-        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-          <button class="faq-btn w-full p-5 text-left font-bold text-slate-900 text-xs sm:text-sm flex items-center justify-between hover:bg-slate-50 transition-colors cursor-pointer">
+        <!-- FAQ 3 -->
+        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
+          <button @click="toggle(3)"
+                  class="w-full p-5 text-left font-bold text-slate-900 text-xs sm:text-sm flex items-center justify-between hover:bg-slate-50 transition-colors cursor-pointer">
             <span>¿Cómo se vincula mi número de WhatsApp?</span>
-            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform"></i>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform duration-200" :class="active === 3 ? 'rotate-180 text-emerald-600' : ''"></i>
           </button>
-          <div class="faq-content hidden px-5 pb-5 text-xs text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
-            Se realiza de la misma manera que al conectar WhatsApp Web. Abres tu panel, vas a <em>Dispositivos Vinculados</em> en tu teléfono y escaneas el código QR en pantalla.
+          <div x-show="active === 3" x-collapse x-cloak class="px-5 pb-5 text-xs text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
+            Es exactamente igual a iniciar sesión en WhatsApp Web: abres tu panel, generas el código QR oficial y lo escaneas desde tu teléfono en <em>Dispositivos vinculados</em>. Toma menos de 30 segundos.
           </div>
         </div>
 
-        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-          <button class="faq-btn w-full p-5 text-left font-bold text-slate-900 text-xs sm:text-sm flex items-center justify-between hover:bg-slate-50 transition-colors cursor-pointer">
-            <span>¿Cómo se resguardan los datos de mi negocio?</span>
-            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform"></i>
+        <!-- FAQ 4 -->
+        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
+          <button @click="toggle(4)"
+                  class="w-full p-5 text-left font-bold text-slate-900 text-xs sm:text-sm flex items-center justify-between hover:bg-slate-50 transition-colors cursor-pointer">
+            <span>¿Mis datos o contactos están aislados de otras empresas?</span>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform duration-200" :class="active === 4 ? 'rotate-180 text-emerald-600' : ''"></i>
           </button>
-          <div class="faq-content hidden px-5 pb-5 text-xs text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
-            Cada cliente cuenta con una base de datos aislada e independiente. Ningún otro usuario tiene acceso a tus contactos, catálogos ni conversaciones.
+          <div x-show="active === 4" x-collapse x-cloak class="px-5 pb-5 text-xs text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
+            <strong>Totalmente.</strong> Cada empresa dispone de una base de datos independiente y cifrada. Ninguna otra empresa tiene acceso a tu historial, listas de precios o contactos de clientes.
           </div>
         </div>
 
@@ -839,10 +959,10 @@
     </div>
   </section>
 
-  <!-- CTA Banner Final -->
-  <section class="py-16 bg-slate-900 text-white relative overflow-hidden">
+  <!-- Final CTA Banner -->
+  <section class="py-20 bg-slate-900 text-white relative overflow-hidden">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 relative z-10">
-      <h2 class="text-2xl sm:text-4xl font-extrabold font-heading leading-tight">
+      <h2 class="text-3xl sm:text-4xl font-extrabold font-heading">
         Organiza la atención de tu empresa en WhatsApp
       </h2>
       <p class="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto">
@@ -852,7 +972,7 @@
         <a href="#planes" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg transition-all">
           Ver Planes y Precios
         </a>
-        <button class="open-demo-trigger w-full sm:w-auto px-7 py-3.5 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs transition-all cursor-pointer">
+        <button @click="openModal()" class="w-full sm:w-auto px-7 py-3.5 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs transition-all cursor-pointer">
           Probar Asistente en WhatsApp
         </button>
       </div>
@@ -879,38 +999,62 @@
     </div>
   </footer>
 
-  <!-- Full-Resolution HD Lightbox Modal -->
-  <div id="lightbox-modal" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md hidden flex flex-col p-4 sm:p-6">
+  <!-- Full-Resolution HD Lightbox Modal (Alpine.js State) -->
+  <div x-show="open"
+       x-cloak
+       x-transition:enter="transition ease-out duration-200"
+       x-transition:enter-start="opacity-0 scale-95"
+       x-transition:enter-end="opacity-100 scale-100"
+       x-transition:leave="transition ease-in duration-150"
+       x-transition:leave-start="opacity-100 scale-100"
+       x-transition:leave-end="opacity-0 scale-95"
+       class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex flex-col p-4 sm:p-6">
+    
     <div class="flex items-center justify-between text-white shrink-0 mb-3 px-2">
       <div class="space-y-0.5">
-        <h3 id="lightbox-title" class="font-bold text-sm sm:text-base text-white">Captura en Alta Resolución</h3>
-        <p id="lightbox-desc" class="text-xs text-slate-400">Detalle visual de la plataforma NexuSend.</p>
+        <h3 class="font-bold text-sm sm:text-base text-white" x-text="title"></h3>
+        <p class="text-xs text-slate-400" x-text="desc"></p>
       </div>
+      
       <div class="flex items-center gap-2">
-        <button id="lightbox-zoom-out" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-white cursor-pointer" title="Reducir">
+        <button @click="zoomOut()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-white cursor-pointer" title="Reducir">
           <i data-lucide="zoom-out" class="w-4 h-4"></i>
         </button>
-        <button id="lightbox-zoom-reset" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-white cursor-pointer" title="Reiniciar Zoom">
+        <button @click="resetZoom()" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-white cursor-pointer" title="Reiniciar Zoom" x-text="Math.round(zoom * 100) + '%'">
           100%
         </button>
-        <button id="lightbox-zoom-in" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-white cursor-pointer" title="Ampliar">
+        <button @click="zoomIn()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-white cursor-pointer" title="Ampliar">
           <i data-lucide="zoom-in" class="w-4 h-4"></i>
         </button>
-        <button id="lightbox-close" class="p-2 rounded-lg bg-red-600/80 hover:bg-red-600 text-white cursor-pointer ml-2" title="Cerrar (Esc)">
+        <button @click="close()" class="p-2 rounded-lg bg-red-600/80 hover:bg-red-600 text-white cursor-pointer ml-2" title="Cerrar (Esc)">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
     </div>
 
     <div class="flex-1 overflow-auto flex items-center justify-center p-2 rounded-2xl bg-slate-900/60 border border-slate-800">
-      <img id="lightbox-img" src="" alt="Captura de pantalla ampliada" class="lightbox-content max-w-full max-h-[82vh] object-contain rounded-xl shadow-2xl transition-transform duration-200">
+      <img :src="src" :alt="title" :style="`transform: scale(${zoom})`" class="max-w-full max-h-[82vh] object-contain rounded-xl shadow-2xl transition-transform duration-200">
     </div>
   </div>
 
-  <!-- Direct WhatsApp Modal -->
-  <div id="contact-modal" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 border border-slate-200 shadow-2xl relative animate-scale-up">
-      <button id="close-modal" aria-label="Cerrar ventana emergente" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-2 cursor-pointer">
+  <!-- Direct WhatsApp Modal (Alpine.js State) -->
+  <div x-show="open"
+       x-cloak
+       x-transition:enter="transition ease-out duration-200"
+       x-transition:enter-start="opacity-0"
+       x-transition:enter-end="opacity-100"
+       x-transition:leave="transition ease-in duration-150"
+       x-transition:leave-start="opacity-100"
+       x-transition:leave-end="opacity-0"
+       class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
+    
+    <div @click.outside="closeModal()"
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0 scale-90 translate-y-4"
+         x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+         class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 border border-slate-200 shadow-2xl relative">
+      
+      <button @click="closeModal()" aria-label="Cerrar ventana emergente" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-2 cursor-pointer">
         <i data-lucide="x" class="w-5 h-5"></i>
       </button>
 
@@ -918,8 +1062,8 @@
         <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-600 mx-auto flex items-center justify-center shadow-inner">
           <i data-lucide="message-circle" class="w-6 h-6"></i>
         </div>
-        <h3 class="text-lg sm:text-xl font-bold text-slate-900 font-heading" id="modal-title">Prueba en Vivo en WhatsApp</h3>
-        <p class="text-xs text-slate-600" id="modal-desc">
+        <h3 class="text-lg sm:text-xl font-bold text-slate-900 font-heading">Prueba en Vivo en WhatsApp</h3>
+        <p class="text-xs text-slate-600">
           Te redirigiremos a nuestro asistente de demostración oficial en WhatsApp para que compruebes las respuestas en tiempo real.
         </p>
       </div>
@@ -927,39 +1071,42 @@
       <div class="space-y-4">
         <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-1">
           <p class="font-semibold text-slate-700">Número de Prueba Configurado:</p>
-          <p class="font-mono text-emerald-700 font-bold" id="modal-phone-display">+593 98 485 6914 (Demo Activo)</p>
+          <p class="font-mono text-emerald-700 font-bold" x-text="display + ' (Demo Activo)'"></p>
           <p class="text-[11px] text-slate-500">Puedes escribir cualquier consulta sobre productos, horarios o cotizaciones.</p>
         </div>
 
-        <a id="modal-wa-link" href="https://wa.me/593984856914?text=Hola" target="_blank" class="w-full py-3.5 px-4 rounded-xl bg-[#25D366] hover:bg-[#20ba59] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition-all">
+        <a :href="waUrl" target="_blank" class="w-full py-3.5 px-4 rounded-xl bg-[#25D366] hover:bg-[#20ba59] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition-all">
           <i data-lucide="message-square" class="w-4 h-4"></i>
           <span>Abrir WhatsApp Ahora</span>
         </a>
 
-        <button id="modal-cancel-btn" class="w-full py-2.5 text-xs text-slate-500 hover:text-slate-700 font-semibold cursor-pointer">
+        <button @click="closeModal()" class="w-full py-2.5 text-xs text-slate-500 hover:text-slate-700 font-semibold cursor-pointer">
           Cerrar
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Floating Sticky WhatsApp Widget -->
+  <!-- Floating Sticky WhatsApp Widget (Alpine.js State) -->
   <div class="fixed bottom-6 right-6 z-40 flex flex-col items-end">
-    <div id="floating-wa-teaser" class="mb-3 bg-white p-3 rounded-2xl shadow-xl border border-slate-200 max-w-[210px] text-xs space-y-1 relative animate-bounce">
-      <button id="close-wa-teaser" class="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-[10px] font-bold cursor-pointer">×</button>
+    
+    <!-- Teaser Bubble -->
+    <div x-show="teaserOpen"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 translate-y-2 scale-90"
+         x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+         class="mb-3 bg-white p-3 rounded-2xl shadow-xl border border-slate-200 max-w-[210px] text-xs space-y-1 relative animate-bounce">
+      <button @click="closeTeaser()" class="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-[10px] font-bold cursor-pointer">×</button>
       <p class="font-bold text-slate-800">¿Tienes dudas?</p>
       <p class="text-[11px] text-slate-500">Escríbele a nuestro asistente de prueba.</p>
     </div>
 
-    <button id="floating-wa-btn" aria-label="Abrir WhatsApp en vivo" class="w-14 h-14 rounded-full bg-[#25D366] hover:bg-[#20ba59] text-white flex items-center justify-center shadow-xl shadow-emerald-600/30 hover:scale-105 transition-transform cursor-pointer relative floating-widget">
+    <!-- Floating Trigger Button -->
+    <button @click="openModal()" aria-label="Abrir WhatsApp en vivo" class="w-14 h-14 rounded-full bg-[#25D366] hover:bg-[#20ba59] text-white flex items-center justify-center shadow-xl shadow-emerald-600/30 hover:scale-105 transition-transform cursor-pointer relative floating-widget">
       <i data-lucide="message-circle" class="w-7 h-7"></i>
       <span class="absolute top-0 right-0 w-4 h-4 rounded-full bg-emerald-700 border-2 border-white text-[9px] font-bold text-white flex items-center justify-center">●</span>
     </button>
   </div>
 
-  <script src="script.js"></script>
-  <script>
-    lucide.createIcons();
-  </script>
 </body>
 </html>
