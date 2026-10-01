@@ -13,8 +13,8 @@
 
 // Central Demo Configuration (Jonathan can replace with his new demo number)
 const DEMO_CONFIG = {
-  phoneNumber: "593996319321", // <-- Modifica este número cuando conectes tu nuevo chip SIM
-  displayNumber: "+593 99 631 9321",
+  phoneNumber: "593984856914", // <-- Modifica este número cuando conectes tu nuevo chip SIM
+  displayNumber: "+593 98 485 6914",
   defaultMessage: "Hola, deseo probar el asistente inteligente de NexuSend en vivo para mi negocio"
 };
 
