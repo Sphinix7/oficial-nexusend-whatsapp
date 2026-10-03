@@ -71,8 +71,19 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
       
       <!-- Official Logo Brand -->
-      <a href="#" class="flex items-center gap-3 group">
-        <img src="assets/nexusend_header.png" alt="NexuSend Plataforma WhatsApp" class="h-10 sm:h-12 w-auto object-contain transition-transform group-hover:scale-105">
+      <a href="#" class="flex items-center gap-3 group mr-6 lg:mr-10 shrink-0">
+        <div class="relative">
+          <div class="absolute -inset-1 rounded-2xl bg-gradient-to-tr from-cyan-500/30 via-blue-500/20 to-emerald-500/30 blur-xs opacity-75 group-hover:opacity-100 transition-opacity"></div>
+          <img src="assets/nexusend_icon.png" alt="NexuSend Logo" class="h-10 sm:h-11 w-auto object-contain relative z-10 transition-transform group-hover:scale-105">
+        </div>
+        <div class="flex flex-col">
+          <span class="text-xl sm:text-2xl font-black tracking-tight text-gradient-nexus leading-none">
+            NexuSend
+          </span>
+          <span class="text-[9px] font-extrabold text-slate-500 uppercase tracking-widest leading-none mt-1">
+            WhatsApp Platform
+          </span>
+        </div>
       </a>
 
       <!-- Desktop Nav Links -->
@@ -141,7 +152,11 @@
   </header>
 
   <!-- Hero Section -->
-  <section class="relative pt-12 pb-20 md:pt-20 md:pb-28 overflow-hidden bg-gradient-to-b from-white via-slate-50/50 to-slate-50">
+  <section class="relative pt-12 pb-20 md:pt-20 md:pb-28 overflow-hidden bg-mesh-hero">
+    <!-- Ambient mesh orbs -->
+    <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[46rem] h-[24rem] bg-gradient-to-r from-cyan-400/15 via-emerald-400/20 to-blue-500/15 blur-3xl pointer-events-none rounded-full"></div>
+    <div class="absolute top-1/2 -left-20 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute top-1/2 -right-20 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-7 relative z-10">
       
       <!-- Tag Badge -->
@@ -152,7 +167,7 @@
 
       <!-- Main Headline -->
       <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight max-w-4xl mx-auto font-heading leading-[1.15]">
-        Atención clara y organizada en WhatsApp, <span class="text-gradient-emerald">incluso fuera de tu horario laboral</span>
+        Atención clara y organizada en WhatsApp, <span class="text-gradient-nexus animate-text-gradient">incluso fuera de tu horario laboral</span>
       </h1>
 
       <!-- Subtitle -->
@@ -411,7 +426,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         
         <!-- Screenshot 1: Real Live Chat Inbox -->
-        <div @click="openImage('assets/real-dashboard-chat.png', 'Bandeja de Entrada en Vivo y Gestión de Asesores', 'Permite a tu equipo responder directamente desde la computadora o el celular. La IA se pausa de forma automática al intervenir un asesor.')"
+        <div @click="openImage('assets/real-dashboard-chat.png', 'Bandeja Unificada & Control Humano en Vivo', 'Respuestas inmediatas por IA con precios de catálogo y derivación transparente a asesor humano cuando se requiere. Números de teléfono y datos 100% protegidos.')"
              class="group bg-white rounded-3xl p-4 border border-slate-200 shadow-sm hover:shadow-xl hover:border-emerald-300 transition-all cursor-pointer">
           <div class="relative overflow-hidden rounded-2xl aspect-[16/10] bg-slate-100">
             <img src="assets/real-dashboard-chat.png" alt="Bandeja de Chats en Vivo NexuSend" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
@@ -515,11 +530,11 @@
           </div>
         </div>
 
-        <!-- Card 6: Dashboard Overview -->
-        <div @click="openImage('assets/dashboard-preview.jpg', 'Panel Principal para Administradores de Empresa', 'Vista general de contactos registrados, volumen de mensajes procesados y accesos de usuarios del equipo.')"
-             class="group bg-white rounded-3xl p-4 border border-slate-200 shadow-sm hover:shadow-xl hover:border-emerald-300 transition-all cursor-pointer">
-          <div class="relative overflow-hidden rounded-2xl aspect-[16/10] bg-slate-100">
-            <img src="assets/dashboard-preview.jpg" alt="Panel General NexuSend" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+        <!-- Card 6: Real Dashboard Overview -->
+        <div @click="openImage('assets/dashboard-preview.jpg', 'Panel de Control & Operaciones NexuSend', 'Monitoreo en tiempo real de contactos totales, campañas masivas, mensajes despachados, tasa de efectividad del 99.4% y motor IA conectado.')"
+             class="group bg-white rounded-3xl p-4 border border-slate-200 shadow-sm card-elevated cursor-pointer">
+          <div class="relative overflow-hidden rounded-2xl aspect-[16/10] bg-slate-950">
+            <img src="assets/dashboard-preview.jpg" alt="Panel de Control & Operaciones NexuSend" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
             <div class="absolute inset-0 bg-slate-950/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
               <span class="bg-white/95 text-slate-900 px-3.5 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1.5">
                 <i data-lucide="zoom-in" class="w-4 h-4 text-emerald-600"></i>
@@ -527,12 +542,12 @@
               </span>
             </div>
             <span class="absolute top-2.5 left-2.5 bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow">
-              Panel Administrativo
+              Panel Principal Real
             </span>
           </div>
           <div class="mt-4 space-y-1">
-            <h3 class="font-bold text-slate-900 text-sm">Panel de Control & Contactos</h3>
-            <p class="text-xs text-slate-500">Control central de clientes, historial de conversaciones y configuración.</p>
+            <h3 class="font-bold text-slate-900 text-sm">Panel de Control & Operaciones</h3>
+            <p class="text-xs text-slate-500">Métricas en vivo de contactos, campañas masivas y actividad del motor de IA.</p>
           </div>
         </div>
 
@@ -542,7 +557,7 @@
   </section>
 
   <!-- Practical Multimodal OCR Section (Alpine.js State) -->
-  <section id="vision-ocr" class="py-20 bg-white border-t border-slate-200" x-data="ocrScanner()">
+  <section id="vision-ocr" class="py-24 bg-gradient-to-b from-white via-slate-50 to-white border-t border-slate-200 relative overflow-hidden" x-data="ocrScanner()">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       
       <div class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-[36px] p-8 sm:p-12 text-white shadow-xl relative overflow-hidden">
@@ -984,9 +999,12 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
       
       <div class="flex items-center gap-3">
-        <img src="assets/logo.png" alt="NexuSend" class="h-8 w-auto object-contain">
+        <div class="flex items-center gap-2">
+          <img src="assets/nexusend_icon.png" alt="NexuSend" class="h-8 w-auto object-contain">
+          <span class="text-xl font-black tracking-tight text-gradient-nexus">NexuSend</span>
+        </div>
         <span class="text-slate-700">|</span>
-        <span>© 2026 NexuSend. Plataforma de Software Empresarial.</span>
+        <span>© 2026 NexuSend. Plataforma de Software Empresarial para WhatsApp.</span>
       </div>
 
       <div class="flex items-center gap-6 text-slate-400">

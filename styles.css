@@ -232,3 +232,49 @@ input[type="range"]::-webkit-slider-thumb:hover {
   background-image: radial-gradient(#d5ccbf 1px, transparent 1px);
   background-size: 16px 16px;
 }
+
+/* ─── Animated Text & Premium Visual Accents ─── */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-text-gradient {
+  background-size: 200% auto;
+  animation: gradientShift 5s ease infinite;
+}
+
+.text-gradient-nexus {
+  background: linear-gradient(135deg, #0284c7 0%, #2563eb 35%, #059669 70%, #10b981 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShift 6s ease infinite;
+}
+
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+.animate-float {
+  animation: floatSlow 4.5s ease-in-out infinite;
+}
+
+.bg-mesh-hero {
+  background-color: #f8fafc;
+  background-image: 
+    radial-gradient(at 10% 10%, rgba(56, 189, 248, 0.15) 0px, transparent 45%),
+    radial-gradient(at 90% 10%, rgba(16, 185, 129, 0.15) 0px, transparent 45%),
+    radial-gradient(at 50% 60%, rgba(99, 102, 241, 0.08) 0px, transparent 50%);
+}
+
+.card-elevated {
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.card-elevated:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 35px -8px rgba(15, 23, 42, 0.12), 0 0 20px -2px rgba(16, 185, 129, 0.18);
+  border-color: rgba(16, 185, 129, 0.45);
+}
