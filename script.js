@@ -496,7 +496,7 @@ function pricingApp() {
 
 function lightboxApp() {
   return {
-    open: false,
+    lightboxOpen: false,
     src: "",
     title: "",
     desc: "",
@@ -507,11 +507,11 @@ function lightboxApp() {
       this.title = title || "Captura en Alta Resolución";
       this.desc = desc || "Detalle visual de la plataforma NexuSend.";
       this.zoom = 1;
-      this.open = true;
+      this.lightboxOpen = true;
     },
 
     close() {
-      this.open = false;
+      this.lightboxOpen = false;
     },
 
     zoomIn() {
@@ -530,18 +530,18 @@ function lightboxApp() {
 
 function whatsappModalApp() {
   return {
-    open: false,
+    waModalOpen: false,
     teaserOpen: true,
     phone: DEMO_CONFIG.phoneNumber,
     display: DEMO_CONFIG.displayNumber,
     defaultMsg: DEMO_CONFIG.defaultMessage,
 
     openModal() {
-      this.open = true;
+      this.waModalOpen = true;
     },
 
     closeModal() {
-      this.open = false;
+      this.waModalOpen = false;
     },
 
     closeTeaser() {

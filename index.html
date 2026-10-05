@@ -1018,7 +1018,7 @@
   </footer>
 
   <!-- Full-Resolution HD Lightbox Modal (Alpine.js State) -->
-  <div x-show="open"
+  <div x-show="lightboxOpen"
        x-cloak
        x-transition:enter="transition ease-out duration-200"
        x-transition:enter-start="opacity-0 scale-95"
@@ -1050,13 +1050,13 @@
       </div>
     </div>
 
-    <div class="flex-1 overflow-auto flex items-center justify-center p-2 rounded-2xl bg-slate-900/60 border border-slate-800">
+    <div class="flex-1 overflow-auto flex items-center justify-center p-2 rounded-2xl bg-slate-900/60 border border-slate-800" @click.self="close()">
       <img :src="src" :alt="title" :style="`transform: scale(${zoom})`" class="max-w-full max-h-[82vh] object-contain rounded-xl shadow-2xl transition-transform duration-200">
     </div>
   </div>
 
   <!-- Direct WhatsApp Modal (Alpine.js State) -->
-  <div x-show="open"
+  <div x-show="waModalOpen"
        x-cloak
        x-transition:enter="transition ease-out duration-200"
        x-transition:enter-start="opacity-0"
