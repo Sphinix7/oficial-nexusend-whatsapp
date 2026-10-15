@@ -314,9 +314,9 @@
           </div>
 
           <!-- Screenshot Frame with HD Lightbox trigger -->
-          <div @click="openImage('assets/dashboard-preview.jpg', 'Panel de Control & Operaciones NexuSend', 'Monitoreo en tiempo real de contactos totales, campañas masivas, mensajes despachados, tasa de efectividad del 99.4% y motor IA conectado.')"
+          <div @click="openImage('assets/dashboard-preview.png', 'Panel Principal NexuSend (Modo Claro Oficial)', 'Vista general en vivo con métricas de contactos totales (513), 1768 mensajes despachados, efectividad del 100% y 99% de automatización con IA.')"
                class="relative rounded-b-xl sm:rounded-b-2xl overflow-hidden cursor-pointer">
-            <img src="assets/dashboard-preview.jpg" alt="Panel de Control NexuSend SaaS" class="w-full h-auto object-cover object-top transition-transform duration-700 group-hover:scale-[1.02]">
+            <img src="assets/dashboard-preview.png" alt="Panel de Control NexuSend SaaS" class="w-full h-auto object-cover object-top transition-transform duration-700 group-hover:scale-[1.02]">
             <div class="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-6">
               <span class="px-4 py-2 rounded-xl bg-white/95 text-slate-900 text-xs font-bold shadow-xl flex items-center gap-2">
                 <i data-lucide="zoom-in" class="w-4 h-4 text-emerald-600"></i>
@@ -353,33 +353,45 @@
   </section>
 
   <!-- Interactive Multi-Industry WhatsApp Simulator (Alpine.js State) -->
-  <section id="simulador" class="py-20 bg-white border-t border-b border-slate-200/80 relative" x-data="simulatorApp()">
+  <!-- Decorative Wave Divider (Hero -> Simulator) -->
+  <div class="relative w-full overflow-hidden leading-none z-10 -mb-1">
+    <svg class="block w-full h-12 md:h-20 text-slate-950" viewBox="0 0 1200 120" preserveAspectRatio="none">
+      <path d="M0,0 C150,90 350,-40 500,60 C650,160 900,10 1200,40 L1200,120 L0,120 Z" fill="currentColor"></path>
+    </svg>
+  </div>
+
+  <!-- Interactive Multi-Industry WhatsApp Simulator (Alpine.js State) -->
+  <section id="simulador" class="py-24 bg-gradient-to-b from-slate-950 via-[#052117] to-slate-950 text-white relative overflow-hidden silhouette-nodes" x-data="simulatorApp()">
+    
+    <!-- Ambient Neon Orbs -->
+    <div class="absolute -top-32 -left-32 w-96 h-96 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none animate-orb-1"></div>
+    <div class="absolute -bottom-32 -right-32 w-96 h-96 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none animate-orb-2"></div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       
       <div class="text-center max-w-3xl mx-auto space-y-3 mb-10">
-        <span class="text-xs font-bold tracking-wider text-emerald-600 uppercase bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">Demostración en Vivo</span>
-        <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-900 font-heading">
+        <span class="text-xs font-bold tracking-wider text-emerald-400 uppercase bg-emerald-500/15 px-4 py-1.5 rounded-full border border-emerald-500/30 backdrop-blur-md">Demostración Interactiva en Vivo</span>
+        <h2 class="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-white font-heading tracking-tight">
           Experimenta cómo responderá a las consultas de tus clientes
         </h2>
-        <p class="text-xs sm:text-sm text-slate-600">
+        <p class="text-xs sm:text-sm text-slate-300 max-w-2xl mx-auto">
           Selecciona un tipo de negocio y haz clic en las consultas típicas para ver la respuesta en el teléfono interactivo:
         </p>
 
         <!-- Industry Selector Tabs -->
-        <div class="inline-flex p-1.5 rounded-2xl bg-slate-100 border border-slate-200 text-xs font-bold mt-2 gap-1 flex-wrap justify-center">
+        <div class="inline-flex p-1.5 rounded-2xl bg-white/10 border border-white/15 backdrop-blur-md text-xs font-bold mt-3 gap-1.5 flex-wrap justify-center shadow-lg">
           <button @click="loadScenario('papeleria')"
-                  class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2"
-                  :class="industry === 'papeleria' ? 'bg-emerald-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'">
+                  class="px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2"
+                  :class="industry === 'papeleria' ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-md shadow-emerald-500/30' : 'text-slate-300 hover:text-white hover:bg-white/10'">
             <span>🎒 Papelería & Suministros</span>
           </button>
           <button @click="loadScenario('ferreteria')"
-                  class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2"
-                  :class="industry === 'ferreteria' ? 'bg-emerald-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'">
+                  class="px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2"
+                  :class="industry === 'ferreteria' ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-md shadow-emerald-500/30' : 'text-slate-300 hover:text-white hover:bg-white/10'">
             <span>🏗️ Ferretería & Materiales</span>
           </button>
           <button @click="loadScenario('servicios')"
-                  class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2"
-                  :class="industry === 'servicios' ? 'bg-emerald-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'">
+                  class="px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2"
+                  :class="industry === 'servicios' ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-md shadow-emerald-500/30' : 'text-slate-300 hover:text-white hover:bg-white/10'">
             <span>🩺 Consultorios & Servicios</span>
           </button>
         </div>
@@ -390,9 +402,9 @@
         
         <!-- Left: Quick-Action Chips & Live WA CTA -->
         <div class="lg:col-span-5 space-y-6">
-          <div class="bg-slate-50 p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+          <div class="glass-card-dark p-6 sm:p-7 rounded-3xl space-y-4 border border-white/10">
             <div class="flex items-center justify-between">
-              <h3 class="font-bold text-slate-900 text-xs sm:text-sm flex items-center gap-2">
+              <h3 class="font-bold text-white text-xs sm:text-sm flex items-center gap-2">
                 <i data-lucide="mouse-pointer" class="w-4 h-4 text-emerald-600"></i>
                 <span>Casos de prueba con 1 clic:</span>
               </h3>
@@ -403,7 +415,7 @@
             <div class="flex flex-col gap-2.5">
               <template x-for="(chip, idx) in currentData.chips" :key="idx">
                 <button @click="sendQuickChip(chip.msg)"
-                        class="w-full text-left p-3 rounded-2xl bg-white hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 transition-all text-xs font-medium text-slate-700 hover:text-emerald-950 flex items-center justify-between group shadow-xs cursor-pointer">
+                        class="w-full text-left p-3.5 rounded-2xl bg-slate-900/90 hover:bg-emerald-950/70 border border-slate-700/70 hover:border-emerald-400 transition-all text-xs font-medium text-slate-200 hover:text-white flex items-center justify-between group shadow-sm cursor-pointer">
                   <span class="truncate pr-2" x-text="chip.label"></span>
                   <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-transform shrink-0"></i>
                 </button>
@@ -412,14 +424,14 @@
           </div>
 
           <!-- Direct Test on Physical WhatsApp Card -->
-          <div class="p-5 rounded-3xl bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 space-y-3">
+          <div class="p-6 rounded-3xl bg-gradient-to-br from-emerald-500/20 via-teal-500/10 to-slate-900/60 border border-emerald-500/35 space-y-3.5 backdrop-blur-md shadow-lg">
             <div class="flex items-start gap-3">
               <div class="w-10 h-10 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-sm">
                 <i data-lucide="smartphone" class="w-5 h-5"></i>
               </div>
               <div class="space-y-1">
-                <h4 class="font-bold text-slate-900 text-xs sm:text-sm">¿Deseas probarlo con tu propio celular?</h4>
-                <p class="text-xs text-slate-600 leading-relaxed">
+                <h4 class="font-bold text-white text-xs sm:text-sm">¿Deseas probarlo con tu propio celular?</h4>
+                <p class="text-xs text-slate-300 leading-relaxed">
                   Escríbele directamente a nuestro número de demostración oficial en WhatsApp para recibir respuestas reales:
                 </p>
               </div>
@@ -433,7 +445,7 @@
 
         <!-- Right: Mobile Device WhatsApp Mockup -->
         <div class="lg:col-span-7 flex justify-center">
-          <div class="w-full max-w-[390px] rounded-[44px] p-3.5 bg-slate-900 shadow-2xl border-4 border-slate-800 relative">
+          <div class="w-full max-w-[390px] rounded-[48px] p-3.5 bg-slate-950 shadow-2xl border-4 border-slate-700/80 relative border-glow-emerald">
             
             <!-- Phone Notch Speaker -->
             <div class="absolute top-5 left-1/2 -translate-x-1/2 w-28 h-4 bg-slate-950 rounded-full z-30 flex items-center justify-center">
@@ -544,15 +556,25 @@
   </section>
 
   <!-- Real System Screenshots Gallery (Sanitized & Professional HD Lightbox) -->
-  <section id="capturas" class="py-24 bg-slate-50 border-t border-slate-200 bg-tech-grid relative">
+  <!-- Decorative Wave Divider (Simulator -> Capturas) -->
+  <div class="relative w-full overflow-hidden leading-none z-10 -mt-1">
+    <svg class="block w-full h-12 md:h-20 text-slate-950" viewBox="0 0 1200 120" preserveAspectRatio="none">
+      <path d="M0,120 C150,30 350,160 500,60 C650,-40 900,110 1200,80 L1200,0 L0,0 Z" fill="currentColor"></path>
+    </svg>
+  </div>
+
+  <section id="capturas" class="py-24 bg-gradient-to-b from-slate-50 via-white to-slate-50 relative overflow-hidden silhouette-nodes">
+    <!-- Ambient Light Accent -->
+    <div class="absolute top-1/4 right-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute bottom-1/4 left-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       
       <div class="text-center max-w-3xl mx-auto space-y-3 mb-16">
         <span class="text-xs font-bold tracking-wider text-slate-600 uppercase bg-slate-200/80 px-3 py-1 rounded-full border border-slate-300">Interfaz de Usuario</span>
-        <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-900 font-heading">
+        <h2 class="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-white font-heading tracking-tight">
           Capturas Reales de la Plataforma
         </h2>
-        <p class="text-xs sm:text-sm text-slate-600">
+        <p class="text-xs sm:text-sm text-slate-300 max-w-2xl mx-auto">
           Haz clic en cualquier imagen para abrirla en alta resolución y comprobar cada sección del software.
         </p>
       </div>
@@ -666,10 +688,10 @@
         </div>
 
         <!-- Card 6: Real Dashboard Overview -->
-        <div @click="openImage('assets/dashboard-preview.jpg', 'Panel de Control & Operaciones NexuSend', 'Monitoreo en tiempo real de contactos totales, campañas masivas, mensajes despachados, tasa de efectividad del 99.4% y motor IA conectado.')"
+        <div @click="openImage('assets/dashboard-preview.png', 'Panel Principal NexuSend (Modo Claro Oficial)', 'Vista general en vivo con métricas de contactos totales (513), 1768 mensajes despachados, efectividad del 100% y 99% de automatización con IA.')"
              class="group bg-white rounded-3xl p-4 border border-slate-200 shadow-sm card-elevated cursor-pointer">
           <div class="relative overflow-hidden rounded-2xl aspect-[16/10] bg-slate-950">
-            <img src="assets/dashboard-preview.jpg" alt="Panel de Control & Operaciones NexuSend" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+            <img src="assets/dashboard-preview.png" alt="Panel de Control & Operaciones NexuSend" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
             <div class="absolute inset-0 bg-slate-950/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
               <span class="bg-white/95 text-slate-900 px-3.5 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1.5">
                 <i data-lucide="zoom-in" class="w-4 h-4 text-emerald-600"></i>
@@ -681,8 +703,8 @@
             </span>
           </div>
           <div class="mt-4 space-y-1">
-            <h3 class="font-bold text-slate-900 text-sm">Panel de Control & Operaciones</h3>
-            <p class="text-xs text-slate-500">Métricas en vivo de contactos, campañas masivas y actividad del motor de IA.</p>
+            <h3 class="font-bold text-slate-900 text-sm">Panel Principal Oficial (Modo Claro)</h3>
+            <p class="text-xs text-slate-500">Métricas en tiempo real con 513 contactos, 100% de entrega y 99% de automatización.</p>
           </div>
         </div>
 
@@ -781,7 +803,7 @@
           <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-heading">
             Calcula el tiempo de atención que puedes optimizar
           </h2>
-          <p class="text-xs sm:text-sm text-slate-600">
+          <p class="text-xs sm:text-sm text-slate-300 max-w-2xl mx-auto">
             Cada consulta repetitiva (horarios, ubicación, precios base) toma entre 2 y 4 minutos de tu equipo. Descubre cuánto tiempo liberas al mes:
           </p>
         </div>
@@ -1053,7 +1075,7 @@
       <div class="text-center space-y-3 mb-12">
         <span class="text-xs font-bold tracking-wider text-slate-600 uppercase bg-slate-200 px-3 py-1 rounded-full border border-slate-300">Preguntas Frecuentes</span>
         <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-heading">Dudas Habituales</h2>
-        <p class="text-xs sm:text-sm text-slate-600">Todo lo necesario para comprender el funcionamiento del servicio.</p>
+        <p class="text-xs sm:text-sm text-slate-300 max-w-2xl mx-auto">Todo lo necesario para comprender el funcionamiento del servicio.</p>
       </div>
 
       <div class="space-y-4">
