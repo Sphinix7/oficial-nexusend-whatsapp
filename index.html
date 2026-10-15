@@ -368,7 +368,7 @@
     <div class="absolute -bottom-32 -right-32 w-96 h-96 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none animate-orb-2"></div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       
-      <div class="text-center max-w-3xl mx-auto space-y-3 mb-10">
+      <div class="text-center max-w-3xl mx-auto space-y-3 mb-10 reveal-fade-up">
         <span class="text-xs font-bold tracking-wider text-emerald-400 uppercase bg-emerald-500/15 px-4 py-1.5 rounded-full border border-emerald-500/30 backdrop-blur-md">Demostración Interactiva en Vivo</span>
         <h2 class="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-white font-heading tracking-tight">
           Experimenta cómo responderá a las consultas de tus clientes
@@ -798,7 +798,7 @@
       
       <div class="bg-white rounded-3xl p-8 sm:p-12 border border-slate-200 shadow-md space-y-8">
         
-        <div class="text-center max-w-2xl mx-auto space-y-2">
+        <div class="text-center max-w-2xl mx-auto space-y-2 reveal-fade-up">
           <span class="text-xs font-bold tracking-wider text-emerald-600 uppercase bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">Eficiencia Operativa</span>
           <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-heading">
             Calcula el tiempo de atención que puedes optimizar
@@ -874,13 +874,16 @@
   </section>
 
   <!-- Pricing Plans Section (Alpine.js State) -->
-  <section id="planes" class="py-24 bg-white relative" x-data="pricingApp()">
+  <section id="planes" class="py-28 bg-gradient-to-b from-slate-50 via-white to-slate-50 relative overflow-hidden silhouette-nodes" x-data="pricingApp()">
+    <!-- Ambient mesh orbs -->
+    <div class="absolute top-1/3 -left-20 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none animate-orb-1"></div>
+    <div class="absolute bottom-1/3 -right-20 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none animate-orb-2"></div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       
-      <div class="text-center max-w-3xl mx-auto space-y-4 mb-16">
+      <div class="text-center max-w-3xl mx-auto space-y-4 mb-16 reveal-fade-up">
         <span class="text-xs font-bold tracking-wider text-emerald-600 uppercase bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">Planes Transparentes</span>
         <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 font-heading">
-          Elige el plan adecuado para el tamaño de tu negocio
+          Elige el plan adecuado para el <span class="text-gradient-nexus">tamaño de tu negocio</span>
         </h2>
         <p class="text-sm text-slate-600">
           Sin contratos obligatorios. Cancela o cambia de plan en cualquier momento.
@@ -897,7 +900,7 @@
                   class="px-5 py-2 rounded-full transition-all cursor-pointer flex items-center gap-1.5"
                   :class="billing === 'annual' ? 'bg-white text-slate-900 shadow-sm font-bold' : 'text-slate-600 hover:text-slate-900'">
             <span>Anual</span>
-            <span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full text-[10px] font-extrabold">2 Meses de Ahorro</span>
+            <span class="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-2.5 py-0.5 rounded-full text-[10px] font-black shadow-xs">2 Meses Gratis</span>
           </button>
         </div>
       </div>
@@ -906,7 +909,7 @@
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch max-w-6xl mx-auto">
         
         <!-- Plan 1: Starter -->
-        <div class="rounded-3xl p-8 bg-white border border-slate-200 shadow-md hover:shadow-xl hover:border-slate-300 transition-all flex flex-col justify-between">
+        <div class="rounded-3xl p-8 bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-lg pricing-card-hover flex flex-col justify-between reveal-fade-up delay-100">
           <div>
             <div class="flex justify-between items-center mb-4">
               <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Plan Emprendedor</span>
@@ -955,12 +958,16 @@
         </div>
 
         <!-- Plan 2: Business (Featured with Animated Conic Border) -->
-        <div class="animated-gradient-border shadow-2xl shadow-emerald-500/20 transform lg:-translate-y-3">
-          <div class="inner-content p-8 flex flex-col justify-between h-full relative">
+        <div class="relative transform lg:-translate-y-4 pt-4 flex flex-col pricing-card-hover z-10 reveal-fade-up delay-200">
           
-          <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-4 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider shadow-md">
-            ⭐ Opción Recomendada
+          <!-- Unclipped Badge floating outside overflow:hidden -->
+          <div class="absolute top-0 left-1/2 -translate-x-1/2 z-30 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 text-white px-5 py-1.5 rounded-full text-[11px] font-black uppercase tracking-wider shadow-xl shadow-emerald-600/35 flex items-center gap-1.5 whitespace-nowrap border-2 border-white">
+            <span class="text-amber-300">★</span>
+            <span>Opción Más Popular</span>
           </div>
+
+          <div class="animated-gradient-border shadow-2xl shadow-emerald-500/25 flex-1 flex flex-col">
+            <div class="inner-content p-8 pt-9 flex flex-col justify-between h-full relative bg-gradient-to-b from-white via-white to-emerald-50/40">
 
           <div>
             <div class="flex justify-between items-center mb-4">
@@ -1013,9 +1020,10 @@
           </div>
         </div>
         </div>
+        </div>
 
         <!-- Plan 3: Pro -->
-        <div class="rounded-3xl p-8 bg-white border border-slate-200 shadow-md hover:shadow-xl hover:border-slate-300 transition-all flex flex-col justify-between">
+        <div class="rounded-3xl p-8 bg-white/95 backdrop-blur-md border border-indigo-100/90 shadow-lg pricing-card-hover flex flex-col justify-between reveal-fade-up delay-300">
           <div>
             <div class="flex justify-between items-center mb-4">
               <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider">Plan Corporativo</span>
@@ -1134,7 +1142,9 @@
   </section>
 
   <!-- Final CTA Banner -->
-  <section class="py-20 bg-slate-900 text-white relative overflow-hidden">
+  <section class="py-24 bg-gradient-to-b from-slate-900 via-slate-950 to-slate-900 text-white relative overflow-hidden silhouette-nodes">
+    <!-- Ambient Neon Aurora -->
+    <div class="absolute -top-40 left-1/2 -translate-x-1/2 w-[50rem] h-[25rem] bg-gradient-to-r from-emerald-500/20 via-cyan-500/20 to-indigo-500/20 blur-3xl rounded-full pointer-events-none animate-orb-1"></div>
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 relative z-10">
       <h2 class="text-3xl sm:text-4xl font-extrabold font-heading">
         Organiza la atención de tu empresa en WhatsApp

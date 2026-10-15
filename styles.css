@@ -407,3 +407,32 @@ input[type="range"]::-webkit-slider-thumb:hover {
 .particle-1 { animation: floatParticle1 6s ease-in-out infinite; }
 .particle-2 { animation: floatParticle2 8s ease-in-out infinite 1.5s; }
 
+
+/* ─── Scroll Reveal Micro-Animations ─── */
+.reveal-fade-up {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-fade-up.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger delays for children */
+.delay-100 { transition-delay: 0.1s; }
+.delay-200 { transition-delay: 0.2s; }
+.delay-300 { transition-delay: 0.3s; }
+.delay-400 { transition-delay: 0.4s; }
+
+/* Enhanced Card Micro-Interactions */
+.pricing-card-hover {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pricing-card-hover:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.12), 0 0 25px -2px rgba(16, 185, 129, 0.2);
+}
+
