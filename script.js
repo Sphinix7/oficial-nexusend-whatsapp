@@ -554,6 +554,40 @@ function whatsappModalApp() {
   };
 }
 
+
+function checkoutModalApp() {
+  return {
+    checkoutModalOpen: false,
+    selectedPlan: {
+      name: "Business",
+      price: "$29.90",
+      hotmartUrl: "https://pay.hotmart.com/U108175724Q"
+    },
+    openCheckout(name, price, url) {
+      this.selectedPlan = {
+        name: name || "Business",
+        price: price || "$29.90",
+        hotmartUrl: url || "https://pay.hotmart.com/U108175724Q"
+      };
+      this.checkoutModalOpen = true;
+      if (window.lucide) {
+        setTimeout(() => window.lucide.createIcons(), 60);
+      }
+    },
+    closeCheckout() {
+      this.checkoutModalOpen = false;
+    },
+    getTransferUrl() {
+      const msg = `Hola Jonathan, deseo activar mi suscripción a NexuSend Plan ${this.selectedPlan.name} (${this.selectedPlan.price}/mes) mediante transferencia bancaria directa para mi negocio.`;
+      return `https://wa.me/593984856914?text=${encodeURIComponent(msg)}`;
+    },
+    getSupportUrl() {
+      const msg = `Hola Jonathan, tengo algunas dudas sobre el Plan ${this.selectedPlan.name} de NexuSend antes de contratar.`;
+      return `https://wa.me/593984856914?text=${encodeURIComponent(msg)}`;
+    }
+  };
+}
+
 function faqApp() {
   return {
     active: 0,
@@ -571,6 +605,7 @@ window.roiCalculator = roiCalculator;
 window.pricingApp = pricingApp;
 window.lightboxApp = lightboxApp;
 window.whatsappModalApp = whatsappModalApp;
+window.checkoutModalApp = checkoutModalApp;
 window.faqApp = faqApp;
 
 // Register with Alpine.js
@@ -583,6 +618,7 @@ function registerAlpine() {
   window.Alpine.data("pricingApp", pricingApp);
   window.Alpine.data("lightboxApp", lightboxApp);
   window.Alpine.data("whatsappModalApp", whatsappModalApp);
+  window.Alpine.data("checkoutModalApp", checkoutModalApp);
   window.Alpine.data("faqApp", faqApp);
 }
 
